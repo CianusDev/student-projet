@@ -60,5 +60,26 @@ namespace StudentProjectAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        // ✅ Nouveau Endpoint pour supprimer un utilisateur
+        [Authorize]
+        [HttpDelete(AuthRoutes.Auth.DeleteUser + "/{id}")]
+        public async Task<ActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var result = await _authService.DeleteUserAsync(id);
+                if (!result)
+                {
+                    return NotFound(new { message = "Utilisateur non trouvé" });
+                }
+
+                return Ok(new { message = "Utilisateur supprimé avec succès" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
-} 
+}
