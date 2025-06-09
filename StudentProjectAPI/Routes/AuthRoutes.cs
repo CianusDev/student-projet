@@ -57,6 +57,17 @@ namespace StudentProjectAPI.Routes
             /// }
             /// </remarks>
             public const string ChangePassword = "change-password";
+
+            /// <summary>
+            /// Suppression d'un utilisateur
+            /// </summary>
+            /// <remarks>
+            /// DELETE /api/auth/delete-user/{id}
+            /// 
+            /// Headers:
+            /// Authorization: Bearer {token}
+            /// </remarks>
+            public const string DeleteUser = "delete-user";
         }
     }
-} 
+}
