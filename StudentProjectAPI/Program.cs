@@ -3,36 +3,53 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StudentProjectAPI.Controllers;
 using StudentProjectAPI.Data;
+using StudentProjectAPI.Endpoints;
 using StudentProjectAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+// Configuration de la base de données
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configuration de Swagger avec JWT
+// Configuration de l'authentification JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")))
+        };
+    });
+
+// Configuration de l'autorisation
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireTeacherRole", policy => policy.RequireRole("Teacher"));
+    options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
+});
+
+// Configuration de Swagger
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "Student Project API", 
-        Version = "v1",
-        Description = "API pour la gestion des projets étudiants"
-    });
-    
-    // Configuration de l'authentification JWT dans Swagger
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Student Project API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header using the Bearer scheme",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -49,45 +66,30 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configuration de SQLite
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Configuration de l'authentification JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")))
-        };
-    });
-
 // Enregistrement des services
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<AuthController>();
+builder.Services.AddScoped<ProjectController>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuration du pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student Project API v1");
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-// Ajout de l'authentification et de l'autorisation
+
+// Middleware d'authentification et d'autorisation
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+
+// Enregistrement des endpoints minimaux
+app.MapAuthEndpoints();
+app.MapProjectEndpoints();
+
 app.Run();

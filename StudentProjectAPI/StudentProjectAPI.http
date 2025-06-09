@@ -1,4 +1,6 @@
 @StudentProjectAPI_HostAddress = http://localhost:5011
+
+### Inscription d'un nouvel utilisateur
 POST {{StudentProjectAPI_HostAddress}}/api/auth/register
 Content-Type: application/json
 Accept: application/json
@@ -10,4 +12,101 @@ Accept: application/json
     "lastName": "User",
     "role": "Student"
 }
-###
+
+### Connexion d'un utilisateur
+POST {{StudentProjectAPI_HostAddress}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "prof@example.com",
+    "password": "Test123!"
+}
+
+### Changement de mot de passe (nécessite un token JWT)
+POST {{StudentProjectAPI_HostAddress}}/api/auth/change-password
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "currentPassword": "Test123!",
+    "newPassword": "NewTest123!",
+    "confirmPassword": "NewTest123!"
+}
+
+### Obtenir tous les projets (nécessite un token JWT)
+GET {{StudentProjectAPI_HostAddress}}/api/projects
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Obtenir un projet par ID (nécessite un token JWT)
+GET {{StudentProjectAPI_HostAddress}}/api/projects/1
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Créer un nouveau projet (nécessite un token JWT de Teacher)
+POST {{StudentProjectAPI_HostAddress}}/api/projects
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "title": "Projet Web - E-commerce",
+    "description": "Développer une application e-commerce complète avec les fonctionnalités suivantes :\n- Catalogue de produits\n- Panier d'achat\n- Système de paiement\n- Gestion des commandes",
+    "dueDate": "2025-07-15T00:00:00Z",
+    "maxPoints": 100,
+    "isGroupProject": true,
+    "maxGroupSize": 3
+}
+
+### Mettre à jour un projet (nécessite un token JWT de Teacher)
+PUT {{StudentProjectAPI_HostAddress}}/api/projects/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "title": "Projet Web - E-commerce (Mise à jour)",
+    "description": "Développer une application e-commerce complète avec paiement en ligne et système de recommandation",
+    "dueDate": "2025-07-20T00:00:00Z",
+    "maxPoints": 120,
+    "isGroupProject": true,
+    "maxGroupSize": 4
+}
+
+### Supprimer un projet (nécessite un token JWT de Teacher)
+DELETE {{StudentProjectAPI_HostAddress}}/api/projects/1
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Variables d'environnement
+@auth_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJwcm9mQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVGVhY2hlciIsImV4cCI6MTc1MDEwMTMzNCwiaXNzIjoiU3R1ZGVudFByb2plY3RBUEkiLCJhdWQiOiJTdHVkZW50UHJvamVjdENsaWVudCJ9.ch15exWNIEzkiclC_7Ae0Fyu7XPUrmRBqlFGOCgcsk4
+
+### Exemples de réponses
+
+### Réponse de création de projet
+# {
+#     "id": 1,
+#     "title": "Projet Web - E-commerce",
+#     "description": "Développer une application e-commerce complète...",
+#     "createdAt": "2024-03-15T10:30:00Z",
+#     "dueDate": "2025-07-15T00:00:00Z",
+#     "maxPoints": 100,
+#     "isGroupProject": true,
+#     "maxGroupSize": 3,
+#     "createdBy": "John Doe",
+#     "status": "Active"
+# }
+
+### Réponse d'erreur d'autorisation
+# {
+#     "status": 401,
+#     "message": "Non autorisé"
+# }
+
+### Réponse de projet non trouvé
+# {
+#     "status": 404,
+#     "message": "Projet non trouvé"
+# }

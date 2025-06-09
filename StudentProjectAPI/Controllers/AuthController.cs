@@ -1,64 +1,54 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using StudentProjectAPI.Dtos.User;
-using StudentProjectAPI.Routes;
 using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    /// <summary>
+    /// Contrôleur gérant l'authentification des utilisateurs
+    /// </summary>
+    public class AuthController
     {
         private readonly IAuthService _authService;
 
+        /// <summary>
+        /// Constructeur du contrôleur d'authentification
+        /// </summary>
+        /// <param name="authService">Service d'authentification injecté</param>
         public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
 
-        [HttpPost(AuthRoutes.Auth.Register)]
-        public async Task<ActionResult<AuthResponseDto>> Register(RegisterUserDto registerDto)
+        /// <summary>
+        /// Endpoint pour l'inscription d'un nouvel utilisateur
+        /// </summary>
+        /// <param name="registerDto">Données d'inscription de l'utilisateur</param>
+        /// <returns>Réponse contenant le token JWT et les informations de l'utilisateur</returns>
+        public async Task<AuthResponseDto> Register(RegisterUserDto registerDto)
         {
-            try
-            {
-                var response = await _authService.RegisterAsync(registerDto);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return await _authService.RegisterAsync(registerDto);
+        }
+        
+        /// <summary>
+        /// Endpoint pour la connexion d'un utilisateur
+        /// </summary>
+        /// <param name="loginDto">Données de connexion de l'utilisateur</param>
+        /// <returns>Réponse contenant le token JWT et les informations de l'utilisateur</returns>
+        public async Task<AuthResponseDto> Login(LoginUserDto loginDto)
+        {
+            return await _authService.LoginAsync(loginDto);
         }
 
-        [HttpPost(AuthRoutes.Auth.Login)]
-        public async Task<ActionResult<AuthResponseDto>> Login(LoginUserDto loginDto)
+        /// <summary>
+        /// Endpoint pour le changement de mot de passe d'un utilisateur authentifié
+        /// </summary>
+        /// <param name="userId">ID de l'utilisateur</param>
+        /// <param name="changePasswordDto">Données de changement de mot de passe</param>
+        /// <returns>Message de confirmation du changement de mot de passe</returns>
+        public async Task<AuthResponseDto> ChangePassword(int userId, ChangePasswordDto changePasswordDto)
         {
-            try
-            {
-                var response = await _authService.LoginAsync(loginDto);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [Authorize]
-        [HttpPost(AuthRoutes.Auth.ChangePassword)]
-        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
-        {
-            try
-            {
-                var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
-                var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
-                return Ok(new { message = "Mot de passe modifié avec succès" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
+            return new AuthResponseDto { Message = "Mot de passe modifié avec succès" };
         }
     }
-} 
+}
