@@ -9,7 +9,6 @@ using StudentProjectAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -23,7 +22,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API pour la gestion des projets étudiants"
     });
     
-    // Configuration de l'authentification JWT dans Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -72,6 +70,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Enregistrement des services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>(); // <-- AJOUT ICI
 
 var app = builder.Build();
 
@@ -86,7 +85,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-// Ajout de l'authentification et de l'autorisation
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
