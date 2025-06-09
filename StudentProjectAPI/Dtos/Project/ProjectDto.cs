@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using StudentProjectAPI.Dtos.Group;
 using StudentProjectAPI.Dtos.User;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudentProjectAPI.Dtos.Project
 {
@@ -11,14 +12,27 @@ namespace StudentProjectAPI.Dtos.Project
     public class ProjectDto
     {
         public int Id { get; set; }
+        
+        [Required]
+        [StringLength(200)]
         public string Title { get; set; } = string.Empty;
+        
         public string? Description { get; set; }
+        
+        [Required]
         public int TeacherId { get; set; }
-        public UserDto Teacher { get; set; } = null!;
+        
+        public string TeacherName { get; set; } = string.Empty;
+        
+        [Required]
         public DateTime DueDate { get; set; }
-        public int MaxPoints { get; set; }
-        public bool IsGroupProject { get; set; }
-        public int MaxGroupSize { get; set; }
+        
+        public int MaxPoints { get; set; } = 100;
+        
+        public bool IsGroupProject { get; set; } = false;
+        
+        public int MaxGroupSize { get; set; } = 4;
+        
         public DateTime CreatedAt { get; set; }
         public List<ProjectDeliverableDto> Deliverables { get; set; } = new();
         public List<GroupDto> Groups { get; set; } = new();

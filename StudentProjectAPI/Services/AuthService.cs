@@ -11,9 +11,16 @@ namespace StudentProjectAPI.Services
 {
     public class AuthService : IAuthService
     {
+        // Contexte de base de données pour accéder aux données des utilisateurs
         private readonly ApplicationDbContext _context;
+        // Configuration pour accéder aux paramètres de l'application (comme la clé JWT)
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Constructeur du service d'authentification
+        /// </summary>
+        /// <param name="context">Contexte de base de données</param>
+        /// <param name="configuration">Configuration de l'application</param>
         public AuthService(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
