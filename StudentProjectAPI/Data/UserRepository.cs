@@ -5,9 +5,9 @@ namespace StudentProjectAPI.Data
 {
     public class UserRepository : IUserRepository
     {
-        private readonly MyDbContext _context;
+        private readonly ApplicationDbContext _context;  // Changé de MyDbContext à ApplicationDbContext
 
-        public UserRepository(MyDbContext context)
+        public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
