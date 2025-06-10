@@ -61,20 +61,20 @@ namespace StudentProjectAPI.Controllers
             }
         }
 
-        // ✅ Nouveau Endpoint pour supprimer un utilisateur
-        [Authorize]
-        [HttpDelete(AuthRoutes.Auth.DeleteUser + "/{id}")]
-        public async Task<ActionResult> DeleteUser(int id)
+        // ✅ Endpoint pour supprimer un utilisateur (accessible uniquement aux administrateurs ou enseignants, à adapter)
+        [Authorize(Roles = "Admin,Teacher")] // ← Tu peux adapter les rôles selon ton besoin
+        [HttpDelete(AuthRoutes.Auth.DeleteUser + "/{id:int}")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                var result = await _authService.DeleteUserAsync(id);
-                if (!result)
+                var success = await _authService.DeleteUserAsync(id);
+                if (!success)
                 {
-                    return NotFound(new { message = "Utilisateur non trouvé" });
+                    return NotFound(new { message = "Utilisateur non trouvé." });
                 }
 
-                return Ok(new { message = "Utilisateur supprimé avec succès" });
+                return NoContent(); // 204, pas besoin de message dans le body
             }
             catch (Exception ex)
             {
@@ -83,3 +83,4 @@ namespace StudentProjectAPI.Controllers
         }
     }
 }
+
