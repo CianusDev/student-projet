@@ -1,0 +1,233 @@
+@page
+@model StudentProjectFront.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Inscription";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Plateforme de Gestion de Projets Étudiants</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+            .register-header h1 {
+                margin: 0;
+                font-size: 1.75rem;
+                font-weight: 600;
+            }
+
+        .register-body {
+            padding: 2rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+
+        .role-selection {
+            margin-bottom: 2rem;
+        }
+
+        .role-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .role-btn {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+            .role-btn.active {
+                border-color: var(--primary-color);
+                background: var(--primary-color);
+                color: white;
+            }
+
+        .conditional-fields {
+            display: none;
+        }
+
+            .conditional-fields.show {
+                display: block;
+                animation: fadeIn 0.3s ease-in-out;
+            }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            border: none;
+        }
+
+        @@media (max-width: 768px) {
+            .role-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <h1><i class="fas fa-user-plus me-2"></i>Inscription</h1>
+                <p>Rejoignez notre plateforme</p>
+            </div>
+
+            <div class="register-body">
+                <form method="post" id="registerForm">
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div class="role-selection">
+                        <label class="form-label fw-bold">Rôle <span class="text-danger">*</span></label>
+                        <div class="role-buttons">
+                            <label class="role-btn" for="role-student">
+                                <input type="radio" id="role-student" name="Input.Role" value="Etudiant" required />
+                                <i class="fas fa-user-graduate me-2"></i> Étudiant
+                            </label>
+                            <label class="role-btn" for="role-teacher">
+                                <input type="radio" id="role-teacher" name="Input.Role" value="Enseignant" required />
+                                <i class="fas fa-chalkboard-teacher me-2"></i> Enseignant
+                            </label>
+                        </div>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.FullName" class="form-control" placeholder="Nom complet" required />
+                        <label asp-for="Input.FullName">Nom complet</label>
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.Email" class="form-control" placeholder="Email" type="email" required />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.Password" class="form-control" placeholder="Mot de passe" type="password" required />
+                        <label asp-for="Input.Password">Mot de passe</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmation" type="password" required />
+                        <label asp-for="Input.ConfirmPassword">Confirmer le mot de passe</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Champs Étudiant -->
+                    <div id="student-fields" class="conditional-fields">
+                        <div class="form-floating">
+                            <input asp-for="Input.StudentNumber" class="form-control" placeholder="Numéro étudiant" />
+                            <label asp-for="Input.StudentNumber">Numéro étudiant</label>
+                        </div>
+                    </div>
+
+                    <!-- Champs Enseignant -->
+                    <div id="teacher-fields" class="conditional-fields">
+                        <div class="form-floating">
+                            <input asp-for="Input.TeacherCode" class="form-control" placeholder="Matricule" />
+                            <label asp-for="Input.TeacherCode">Matricule enseignant</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-register mt-4">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </button>
+
+                    <div class="text-center mt-3">
+                        <a href="/Account/Login">Déjà un compte ? Se connecter</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleRadios = document.querySelectorAll('input[name="Input.Role"]');
+            const studentFields = document.getElementById('student-fields');
+            const teacherFields = document.getElementById('teacher-fields');
+
+            roleRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    document.querySelectorAll('.role-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.closest('.role-btn').classList.add('active');
+
+                    if (this.value === 'Etudiant') {
+                        studentFields.classList.add('show');
+                        teacherFields.classList.remove('show');
+                    } else {
+                        teacherFields.classList.add('show');
+                        studentFields.classList.remove('show');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

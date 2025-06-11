@@ -29,3 +29,29 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Styles pour la carte de connexion */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 1.5rem;
+}
+
+/* Espacement pour les boutons */
+.btn {
+    margin-top: 10px;
+}
+
+/* Style pour les messages d'erreur */
+.validation-summary-errors ul {
+    list-style: none;
+    padding-left: 0;
+}
