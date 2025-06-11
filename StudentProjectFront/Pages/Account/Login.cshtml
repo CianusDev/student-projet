@@ -1,0 +1,127 @@
+@page
+@model StudentProjectFront.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Connexion";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Plateforme de Gestion de Projets Étudiants</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+            .login-header h1 {
+                margin: 0;
+                font-size: 1.75rem;
+            }
+
+        .login-body {
+            padding: 2rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            border: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        @@media (max-width: 768px) {
+            .login-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1><i class="fas fa-sign-in-alt me-2"></i>Connexion</h1>
+            </div>
+
+            <div class="login-body">
+                <form method="post">
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.Email" class="form-control" placeholder="Email" />
+                        <label asp-for="Input.Email"><i class="fas fa-envelope me-2"></i>Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Input.Password" class="form-control" placeholder="Mot de passe" type="password" />
+                        <label asp-for="Input.Password"><i class="fas fa-lock me-2"></i>Mot de passe</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label">Se souvenir de moi</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                    </button>
+
+                    <div class="login-footer">
+                        <p>Pas encore de compte ? <a href="/Account/Register">S'inscrire</a></p>
+                        <p><a href="/Account/ForgotPassword">Mot de passe oublié ?</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

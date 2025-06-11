@@ -1,2 +1,20 @@
+# Ignorer les fichiers SQL et notes
 *.sql
 note.md
+
+# Ignorer les fichiers/dossiers générés par Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignorer les fichiers de compilation
+bin/
+obj/
+
+# Fichiers temporaires
+*.log
+*.tmp
+*.bak
+*.swp
