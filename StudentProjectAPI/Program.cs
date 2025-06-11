@@ -70,8 +70,14 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IProjectAssignmentService, ProjectAssignmentService>();
 builder.Services.AddScoped<AuthController>();
 builder.Services.AddScoped<ProjectController>();
+builder.Services.AddScoped<UserController>();
+builder.Services.AddScoped<GroupController>();
+builder.Services.AddScoped<ProjectAssignmentController>();
 
 var app = builder.Build();
 
@@ -91,5 +97,8 @@ app.UseAuthorization();
 // Enregistrement des endpoints minimaux
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
+app.MapUserEndpoints();
+app.MapGroupEndpoints();
+app.MapProjectAssignmentEndpoints();
 
 app.Run();

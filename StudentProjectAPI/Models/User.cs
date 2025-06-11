@@ -34,6 +34,8 @@ namespace StudentProjectAPI.Models
         public string Role { get; set; } = string.Empty; // Teacher, Student
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsActive { get; set; } = true;
         
         // Navigation properties
         public virtual ICollection<Project> TeacherProjects { get; set; } = new List<Project>();

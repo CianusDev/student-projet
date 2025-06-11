@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace projet_apnet_dotnet.StudentProjectAPI.Dtos.Group
+namespace StudentProjectAPI.Dtos.Group
 {
     // DTO pour modifier un groupe
     public class UpdateGroupDto
