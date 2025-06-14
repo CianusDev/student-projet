@@ -9,7 +9,8 @@ namespace StudentProjectAPI.Controllers
     {
     private static readonly List<RegisterUserDto> Users = new();
 
-        // PUT: api/user/{id}
+    
+    
         [HttpPut("{id}")]
         public IActionResult UpdateUser(Guid id, [FromBody] UpdateUserDto updateDto)
         {
