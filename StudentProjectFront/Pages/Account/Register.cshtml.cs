@@ -38,9 +38,6 @@ namespace StudentProjectFront.Pages.Account
             public string ConfirmPassword { get; set; } = string.Empty;
 
             // Champs pour Étudiant
-            [Display(Name = "Numéro d'étudiant")]
-            public string? StudentNumber { get; set; }
-
             [Display(Name = "Filière ou spécialité")]
             public string? Major { get; set; }
 
@@ -51,9 +48,6 @@ namespace StudentProjectFront.Pages.Account
             public string? ProjectGroup { get; set; }
 
             // Champs pour Enseignant
-            [Display(Name = "Matricule enseignant")]
-            public string? TeacherCode { get; set; }
-
             [Display(Name = "Département ou UFR")]
             public string? Department { get; set; }
         }
@@ -63,16 +57,11 @@ namespace StudentProjectFront.Pages.Account
             // Logique pour l'affichage de la page
         }
 
-        // Correction 1: Suppression d'async car pas d'await utilisé
         public IActionResult OnPost()
         {
             // Validation conditionnelle selon le rôle
             if (Input.Role == "Etudiant")
             {
-                if (string.IsNullOrWhiteSpace(Input.StudentNumber))
-                {
-                    ModelState.AddModelError("Input.StudentNumber", "Le numéro d'étudiant est requis");
-                }
                 if (string.IsNullOrWhiteSpace(Input.Major))
                 {
                     ModelState.AddModelError("Input.Major", "La filière est requise");
@@ -84,10 +73,6 @@ namespace StudentProjectFront.Pages.Account
             }
             else if (Input.Role == "Enseignant")
             {
-                if (string.IsNullOrWhiteSpace(Input.TeacherCode))
-                {
-                    ModelState.AddModelError("Input.TeacherCode", "Le matricule enseignant est requis");
-                }
                 if (string.IsNullOrWhiteSpace(Input.Department))
                 {
                     ModelState.AddModelError("Input.Department", "Le département est requis");
@@ -107,7 +92,7 @@ namespace StudentProjectFront.Pages.Account
                 TempData["SuccessMessage"] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
                 return RedirectToPage("/Account/Login");
             }
-            catch // Correction 2: Suppression de la variable ex non utilisée
+            catch
             {
                 ModelState.AddModelError(string.Empty, "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
                 return Page();
