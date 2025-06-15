@@ -9,22 +9,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Plateforme de Gestion de Projets …tudiants</title>
+    <title>@ViewData["Title"] - Plateforme de Gestion de Projets √âtudiants</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #64748b;
+            --primary-color: #1a1a1a;
+            --secondary-color: #333333;
             --success-color: #10b981;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
             --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
+            --border-color: #444444;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:white;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -40,14 +40,14 @@
         .register-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             max-width: 600px;
             width: 100%;
         }
 
         .register-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -81,15 +81,26 @@
             padding: 1rem;
             border: 2px solid var(--border-color);
             border-radius: 8px;
-            cursor: pointer;
+            cursor: pointer;.btn-register:hover 
             transition: all 0.3s ease;
             text-align: center;
+            background: white;
+            color: #333333;
         }
 
             .role-btn.active {
                 border-color: var(--primary-color);
-                background: var(--primary-color);
+                background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
                 color: white;
+            }
+
+            .role-btn:hover {
+                border-color: var(--secondary-color);
+                background: #f8f9fa;
+            }
+
+            .role-btn.active:hover {
+                background: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #444444 100%);
             }
 
         .conditional-fields {
@@ -101,7 +112,7 @@
                 animation: fadeIn 0.3s ease-in-out;
             }
 
-        @@keyframes fadeIn {
+        @*@keyframes fadeIn {
             from {
                 opacity: 0;
             }
@@ -109,20 +120,45 @@
             to {
                 opacity: 1;
             }
-        }
+        }*@
 
         .btn-register {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
             border: none;
+            color: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
-        @@media (max-width: 768px) {
+        .btn-register:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #444444 100%);
+            transform: translateY(-2px);
+            color:white;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-control:focus {
+            border-color: #333333;
+            box-shadow: 0 0 0 0.25rem rgba(51, 51, 51, 0.25);
+        }
+
+        .register-body a {
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .register-body a:hover {
+            color: #000000;
+        }
+
+        @*@media (max-width: 768px) {
             .role-buttons {
                 grid-template-columns: 1fr;
             }
-        }
+        }*@
     </style>
 </head>
 <body>
@@ -138,14 +174,14 @@
                     <div asp-validation-summary="All" class="alert alert-danger"></div>
 
                     <div class="role-selection">
-                        <label class="form-label fw-bold">RÙle <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold">R√¥le <span class="text-danger">*</span></label>
                         <div class="role-buttons">
                             <label class="role-btn" for="role-student">
-                                <input type="radio" id="role-student" name="Input.Role" value="Etudiant" required />
-                                <i class="fas fa-user-graduate me-2"></i> …tudiant
+                                <input type="radio" id="role-student" name="Input.Role" value="Etudiant" required style="display: none;" />
+                                <i class="fas fa-user-graduate me-2"></i> √âtudiant
                             </label>
                             <label class="role-btn" for="role-teacher">
-                                <input type="radio" id="role-teacher" name="Input.Role" value="Enseignant" required />
+                                <input type="radio" id="role-teacher" name="Input.Role" value="Enseignant" required style="display: none;" />
                                 <i class="fas fa-chalkboard-teacher me-2"></i> Enseignant
                             </label>
                         </div>
@@ -176,28 +212,47 @@
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
-                    <!-- Champs …tudiant -->
+                    <!-- Champs √©tudiant -->
                     <div id="student-fields" class="conditional-fields">
                         <div class="form-floating">
-                            <input asp-for="Input.StudentNumber" class="form-control" placeholder="NumÈro Ètudiant" />
-                            <label asp-for="Input.StudentNumber">NumÈro Ètudiant</label>
+                            <input asp-for="Input.Major" class="form-control" placeholder="Fili√®re ou sp√©cialit√©" />
+                            <label asp-for="Input.Major">Fili√®re ou sp√©cialit√©</label>
+                            <span asp-validation-for="Input.Major" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating">
+                            <select asp-for="Input.StudyLevel" class="form-select">
+                                <option value="">S√©lectionner le niveau</option>
+                                <option value="L1">Licence 1</option>
+                                <option value="L2">Licence 2</option>
+                                <option value="L3">Licence 3</option>
+                                <option value="M1">Master 1</option>
+                                <option value="M2">Master 2</option>
+                                <option value="Doctorat">Doctorat</option>
+                            </select>
+                            <label asp-for="Input.StudyLevel">Niveau d'√©tudes</label>
+                            <span asp-validation-for="Input.StudyLevel" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating">
+                            <input asp-for="Input.ProjectGroup" class="form-control" placeholder="Groupe de projet" />
+                            <label asp-for="Input.ProjectGroup">Groupe de projet (optionnel)</label>
                         </div>
                     </div>
 
                     <!-- Champs Enseignant -->
                     <div id="teacher-fields" class="conditional-fields">
                         <div class="form-floating">
-                            <input asp-for="Input.TeacherCode" class="form-control" placeholder="Matricule" />
-                            <label asp-for="Input.TeacherCode">Matricule enseignant</label>
+                            <input asp-for="Input.Department" class="form-control" placeholder="D√©partement ou UFR" />
+                            <label asp-for="Input.Department">D√©partement ou UFR</label>
+                            <span asp-validation-for="Input.Department" class="text-danger"></span>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-register mt-4">
+                    <button type="submit" class="btn btn-register mt-4">
                         <i class="fas fa-user-plus me-2"></i>S'inscrire
                     </button>
 
                     <div class="text-center mt-3">
-                        <a href="/Account/Login">DÈj‡ un compte ? Se connecter</a>
+                        <a href="/Account/Login">D√©j√† un compte ? Se connecter</a>
                     </div>
                 </form>
             </div>

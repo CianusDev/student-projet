@@ -14,14 +14,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #64748b;
+            --primary-color: #1a1a1a;
+            --secondary-color: #333333;
             --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
+            --border-color: #444444;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -37,16 +37,17 @@
         .login-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 100%;
         }
 
         .login-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
             color: white;
             padding: 2rem;
             text-align: center;
+            border-radius: 16px 16px 0 0;
         }
 
             .login-header h1 {
@@ -65,8 +66,18 @@
         .btn-login {
             width: 100%;
             padding: 0.875rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%);
             border: none;
+            color: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #444444 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            color: white;
         }
 
         .login-footer {
@@ -74,11 +85,26 @@
             margin-top: 1.5rem;
         }
 
-        @@media (max-width: 768px) {
+        .login-footer a {
+            color: #333333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .login-footer a:hover {
+            color: #000000;
+        }
+
+        .form-control:focus {
+            border-color: #333333;
+            box-shadow: 0 0 0 0.25rem rgba(51, 51, 51, 0.25);
+        }
+
+        @*@media (max-width: 768px) {
             .login-container {
                 padding: 1rem;
             }
-        }
+        }*@
     </style>
 </head>
 <body>
@@ -109,7 +135,7 @@
                         <label asp-for="Input.RememberMe" class="form-check-label">Se souvenir de moi</label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-login">
+                    <button type="submit" class="btn btn-login">
                         <i class="fas fa-sign-in-alt me-2"></i>Se connecter
                     </button>
 

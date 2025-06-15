@@ -11,9 +11,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                <a class="navbar-brand text-white" asp-area="" asp-page="/Index">
                     <i class="fas fa-graduation-cap me-2"></i>
                     Student Project
                 </a>
@@ -24,17 +24,17 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">
-                                <i class="fas fa-home me-1"></i>
-                                Accueil
-                            </a>
+                            @*<a class="nav-link text-white" asp-area="" asp-page="/Index">
+                                    <i class="fas fa-home me-1"></i>
+                                    Accueil
+                                </a>*@
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">
-                                <i class="fas fa-shield-alt me-1"></i>
-                                Confidentialité
-                            </a>
-                        </li>
+                        @*<li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-page="/Privacy">
+                                    <i class="fas fa-shield-alt me-1"></i>
+                                    Confidentialité
+                                </a>
+                            </li>*@
                     </ul>
                     <ul class="navbar-nav">
                         @{
@@ -45,11 +45,11 @@
                         @if (isLoggedIn && !string.IsNullOrEmpty(userEmail))
                         {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle me-1"></i>
                                 @userEmail
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profil</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Paramètres</a></li>
                                 <li><hr class="dropdown-divider"></li>
@@ -60,7 +60,7 @@
                         else
                         {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Account/Login">
+                            <a class="nav-link text-white" asp-page="/Account/Login">
                                 <i class="fas fa-sign-in-alt me-1"></i>
                                 Connexion
                             </a>
@@ -77,9 +77,17 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer bg-dark text-white p-5">
         <div class="container">
-            &copy; 2024 - Student Project - <a asp-area="" asp-page="/Privacy">Confidentialité</a>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-graduation-cap me-2"></i>StudentProject</h5>
+                    <p>Plateforme de gestion de projets étudiants</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 StudentProject. Tous droits réservés.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
