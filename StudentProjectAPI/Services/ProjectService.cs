@@ -6,16 +6,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace StudentProjectAPI.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : IProjectService
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ProjectService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
-        {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly ApplicationDbContext _context = context;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<IEnumerable<ProjectResponseDto>> GetAllProjectsAsync()
         {

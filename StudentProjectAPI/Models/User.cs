@@ -33,13 +33,22 @@ namespace StudentProjectAPI.Models
         [StringLength(20)]
         public string Role { get; set; } = string.Empty; // Teacher, Student
         
+
+        public string Specialite { get; set; } = string.Empty;
+
+        public string NiveauEtude { get; set; } = string.Empty;
+
+        public string Departement { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsActive { get; set; } = true;
         
         // Navigation properties
-        public virtual ICollection<Project> TeacherProjects { get; set; } = new List<Project>();
-        public virtual ICollection<GroupMember> GroupMemberships { get; set; } = new List<GroupMember>();
-        public virtual ICollection<ProjectAssignment> IndividualAssignments { get; set; } = new List<ProjectAssignment>();
-        public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
-        public virtual ICollection<Evaluation> Evaluations { get; set; } = new List<Evaluation>();
+        public virtual ICollection<Project> TeacherProjects { get; set; } = [];
+        public virtual ICollection<GroupMember> GroupMemberships { get; set; } = [];
+        public virtual ICollection<ProjectAssignment> IndividualAssignments { get; set; } = [];
+        public virtual ICollection<Submission> Submissions { get; set; } = [];
+        public virtual ICollection<Evaluation> Evaluations { get; set; } = [];
     }
 }

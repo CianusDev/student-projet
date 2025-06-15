@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentProjectAPI.Data;
 
@@ -10,9 +11,11 @@ using StudentProjectAPI.Data;
 namespace StudentProjectAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611193500_AddIsActiveToUser")]
+    partial class AddIsActiveToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -360,10 +363,6 @@ namespace StudentProjectAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Departement")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -382,10 +381,6 @@ namespace StudentProjectAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NiveauEtude")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -394,10 +389,6 @@ namespace StudentProjectAPI.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Specialite")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -412,57 +403,45 @@ namespace StudentProjectAPI.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Departement = "",
                             Email = "prof@school.com",
                             FirstName = "Jean",
                             IsActive = true,
                             LastName = "Dupont",
-                            NiveauEtude = "",
                             PasswordHash = "hashedpassword1",
-                            Role = "Teacher",
-                            Specialite = ""
+                            Role = "Teacher"
                         },
                         new
                         {
                             Id = 2,
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Departement = "",
                             Email = "student1@school.com",
                             FirstName = "Marie",
                             IsActive = true,
                             LastName = "Martin",
-                            NiveauEtude = "",
                             PasswordHash = "hashedpassword2",
-                            Role = "Student",
-                            Specialite = ""
+                            Role = "Student"
                         },
                         new
                         {
                             Id = 3,
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Departement = "",
                             Email = "student2@school.com",
                             FirstName = "Pierre",
                             IsActive = true,
                             LastName = "Durand",
-                            NiveauEtude = "",
                             PasswordHash = "hashedpassword3",
-                            Role = "Student",
-                            Specialite = ""
+                            Role = "Student"
                         },
                         new
                         {
                             Id = 4,
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Departement = "",
                             Email = "student3@school.com",
                             FirstName = "Sophie",
                             IsActive = true,
                             LastName = "Bernard",
-                            NiveauEtude = "",
                             PasswordHash = "hashedpassword4",
-                            Role = "Student",
-                            Specialite = ""
+                            Role = "Student"
                         });
                 });
 
