@@ -40,7 +40,10 @@ namespace StudentProjectAPI.Services
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Role = registerDto.Role,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Specialite = registerDto.Specialite,
+                Departement = registerDto.Departement,
+                NiveauEtude = registerDto.NiveauEtude,
             };
 
             _context.Users.Add(user);

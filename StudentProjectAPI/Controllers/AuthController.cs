@@ -4,16 +4,11 @@ using StudentProjectAPI.Services;
 namespace StudentProjectAPI.Controllers
 {
     /// Contrôleur gérant l'authentification des utilisateurs
-    public class AuthController
+    /// Constructeur du contrôleur d'authentification
+    /// Service d'authentification injecté
+    public class AuthController(IAuthService authService)
     {
-        private readonly IAuthService _authService;
-
-        /// Constructeur du contrôleur d'authentification
-        /// Service d'authentification injecté
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+        private readonly IAuthService _authService = authService;
 
         /// <summary>
         /// Endpoint pour l'inscription d'un nouvel utilisateur

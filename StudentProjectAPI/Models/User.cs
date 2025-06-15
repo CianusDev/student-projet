@@ -33,6 +33,13 @@ namespace StudentProjectAPI.Models
         [StringLength(20)]
         public string Role { get; set; } = string.Empty; // Teacher, Student
         
+
+        public string Specialite { get; set; } = string.Empty;
+
+        public string NiveauEtude { get; set; } = string.Empty;
+
+        public string Departement { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public bool IsActive { get; set; } = true;

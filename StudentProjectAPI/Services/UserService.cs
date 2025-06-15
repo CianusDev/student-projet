@@ -14,14 +14,9 @@ namespace StudentProjectAPI.Services
         Task<UserStatsDto> GetUserStatsAsync();
     }
 
-    public class UserService : IUserService
+    public class UserService(ApplicationDbContext context) : IUserService
     {
-        private readonly ApplicationDbContext _context;
-
-        public UserService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<UserListItemDto>> GetAllUsersAsync()
         {

@@ -7,14 +7,9 @@ namespace StudentProjectAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectAssignmentController : ControllerBase
+public class ProjectAssignmentController(IProjectAssignmentService assignmentService) : ControllerBase
 {
-    private readonly IProjectAssignmentService _assignmentService;
-
-    public ProjectAssignmentController(IProjectAssignmentService assignmentService)
-    {
-        _assignmentService = assignmentService;
-    }
+    private readonly IProjectAssignmentService _assignmentService = assignmentService;
 
     [HttpGet]
     [Authorize(Roles = "Admin,Teacher")]
