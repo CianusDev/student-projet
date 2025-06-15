@@ -6,14 +6,9 @@ using StudentProjectAPI.Models;
 
 namespace StudentProjectAPI.Services
 {
-    public class GroupService : IGroupService
+    public class GroupService(ApplicationDbContext context) : IGroupService
     {
-        private readonly ApplicationDbContext _context;
-
-        public GroupService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<IEnumerable<GroupDto>> GetAllGroupsAsync()
         {
@@ -165,7 +160,7 @@ namespace StudentProjectAPI.Services
                 ProjectTitle = group.Project.Title,
                 GroupName = group.GroupName,
                 CreatedAt = group.CreatedAt,
-                Members = group.Members.Select(m => new GroupMemberDto
+                Members = [.. group.Members.Select(m => new GroupMemberDto
                 {
                     Id = m.Id,
                     GroupId = m.GroupId,
@@ -181,7 +176,7 @@ namespace StudentProjectAPI.Services
                     },
                     IsLeader = m.IsLeader,
                     JoinedAt = m.JoinedAt
-                }).ToList()
+                })]
             };
         }
     }

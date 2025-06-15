@@ -3,17 +3,13 @@ using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers
 {
-    /// <summary>
     /// Contrôleur gérant l'authentification des utilisateurs
-    /// </summary>
     public class AuthController
     {
         private readonly IAuthService _authService;
 
-        /// <summary>
         /// Constructeur du contrôleur d'authentification
-        /// </summary>
-        /// <param name="authService">Service d'authentification injecté</param>
+        /// Service d'authentification injecté
         public AuthController(IAuthService authService)
         {
             _authService = authService;
@@ -29,9 +25,6 @@ namespace StudentProjectAPI.Controllers
             return await _authService.RegisterAsync(registerDto);
         }
         
-        /// <summary>
-        /// Endpoint pour la connexion d'un utilisateur
-        /// </summary>
         /// <param name="loginDto">Données de connexion de l'utilisateur</param>
         /// <returns>Réponse contenant le token JWT et les informations de l'utilisateur</returns>
         public async Task<AuthResponseDto> Login(LoginUserDto loginDto)

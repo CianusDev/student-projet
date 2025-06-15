@@ -3,14 +3,9 @@ using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers
 {
-    public class GroupController
+    public class GroupController(IGroupService groupService)
     {
-        private readonly IGroupService _groupService;
-
-        public GroupController(IGroupService groupService)
-        {
-            _groupService = groupService;
-        }
+        private readonly IGroupService _groupService = groupService;
 
         public async Task<IEnumerable<GroupDto>> GetGroups()
         {
