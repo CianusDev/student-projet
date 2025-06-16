@@ -9,17 +9,23 @@ using StudentProjectAPI.Models;
 
 namespace StudentProjectAPI.Services
 {
-    /// <summary>
-    /// Constructeur du service d'authentification
-    /// </summary>
-    /// <param name="context">Contexte de base de données</param>
-    /// <param name="configuration">Configuration de l'application</param>
-    public class AuthService(ApplicationDbContext context, IConfiguration configuration) : IAuthService
+    public class AuthService : IAuthService
     {
         // Contexte de base de données pour accéder aux données des utilisateurs
-        private readonly ApplicationDbContext _context = context;
+        private readonly ApplicationDbContext _context;
         // Configuration pour accéder aux paramètres de l'application (comme la clé JWT)
-        private readonly IConfiguration _configuration = configuration;
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Constructeur du service d'authentification
+        /// </summary>
+        /// <param name="context">Contexte de base de données</param>
+        /// <param name="configuration">Configuration de l'application</param>
+        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+        {
+            _context = context;
+            _configuration = configuration;
+        }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto)
         {
@@ -40,10 +46,7 @@ namespace StudentProjectAPI.Services
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Role = registerDto.Role,
-                CreatedAt = DateTime.UtcNow,
-                Specialite = registerDto.Specialite,
-                Departement = registerDto.Departement,
-                NiveauEtude = registerDto.NiveauEtude,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(user);

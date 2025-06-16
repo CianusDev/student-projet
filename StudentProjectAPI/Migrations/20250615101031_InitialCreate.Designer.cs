@@ -11,8 +11,8 @@ using StudentProjectAPI.Data;
 namespace StudentProjectAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250611193500_AddIsActiveToUser")]
-    partial class AddIsActiveToUser
+    [Migration("20250615101031_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -373,9 +373,6 @@ namespace StudentProjectAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -405,7 +402,6 @@ namespace StudentProjectAPI.Migrations
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "prof@school.com",
                             FirstName = "Jean",
-                            IsActive = true,
                             LastName = "Dupont",
                             PasswordHash = "hashedpassword1",
                             Role = "Teacher"
@@ -416,7 +412,6 @@ namespace StudentProjectAPI.Migrations
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "student1@school.com",
                             FirstName = "Marie",
-                            IsActive = true,
                             LastName = "Martin",
                             PasswordHash = "hashedpassword2",
                             Role = "Student"
@@ -427,7 +422,6 @@ namespace StudentProjectAPI.Migrations
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "student2@school.com",
                             FirstName = "Pierre",
-                            IsActive = true,
                             LastName = "Durand",
                             PasswordHash = "hashedpassword3",
                             Role = "Student"
@@ -438,7 +432,6 @@ namespace StudentProjectAPI.Migrations
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "student3@school.com",
                             FirstName = "Sophie",
-                            IsActive = true,
                             LastName = "Bernard",
                             PasswordHash = "hashedpassword4",
                             Role = "Student"

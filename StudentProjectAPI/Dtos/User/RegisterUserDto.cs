@@ -27,13 +27,5 @@ namespace StudentProjectAPI.Dtos.User
         [Required(ErrorMessage = "Le rôle est requis")]
         [RegularExpression("^(Teacher|Student)$", ErrorMessage = "Le rôle doit être 'Teacher' ou 'Student'")]
         public string Role { get; set; } = string.Empty;
-
-        public string Specialite { get; set; } = string.Empty;
-
-        public string NiveauEtude { get; set; } = string.Empty;
-
-        public string Departement { get; set; } = string.Empty;
-
-        
     }
 }

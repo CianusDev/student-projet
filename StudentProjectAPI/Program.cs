@@ -26,7 +26,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")
+                )
+            )
         };
     });
 
@@ -37,7 +41,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
 });
 
-// Configuration de Swagger
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -61,7 +65,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            Array.Empty<string>()
+            new string[] { }
         }
     });
 });
@@ -70,18 +74,13 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddScoped<IProjectAssignmentService, ProjectAssignmentService>();
+builder.Services.AddScoped<IUserService, UserService>(); // ✅ Ajouté
 builder.Services.AddScoped<AuthController>();
 builder.Services.AddScoped<ProjectController>();
-builder.Services.AddScoped<UserController>();
-builder.Services.AddScoped<GroupController>();
-builder.Services.AddScoped<ProjectAssignmentController>();
 
 var app = builder.Build();
 
-// Configuration du pipeline HTTP
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -89,16 +88,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Middleware d'authentification et d'autorisation
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Enregistrement des endpoints minimaux
+// Mapping des endpoints
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
-app.MapUserEndpoints();
-app.MapGroupEndpoints();
-app.MapProjectAssignmentEndpoints();
+app.MapUserEndpoints(); // ✅ ACTIVE CETTE LIGNE
 
 app.Run();

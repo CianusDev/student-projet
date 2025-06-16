@@ -1,46 +1,28 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using StudentProjectAPI.Controllers;
-using StudentProjectAPI.Dtos.User;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using StudentProjectAPI.Services;
+using System.Security.Claims;
 
-namespace StudentProjectAPI.Endpoints
+namespace StudentProjectAPI.Endpoints;
+
+public static class UserEndpoints
 {
-    public static class UserEndpoints
+    public static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        public static void MapUserEndpoints(this IEndpointRouteBuilder app)
+        var group = app.MapGroup("/api/Users").RequireAuthorization();
+
+        group.MapDelete("/me", async (HttpContext context, IUserService userService) =>
         {
-            var group = app.MapGroup("/api/user")
-                .WithTags("Users");
+            var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Results.Unauthorized();
 
-            group.MapGet("/", async ([FromServices] UserController controller) =>
-            {
-                var users = await controller.GetUsers();
-                return Results.Ok(users);
-            });
+            var userId = int.Parse(userIdClaim.Value);
+            var result = await userService.DeleteUserAsync(userId);
 
-            group.MapGet("/{id}", async (int id, [FromServices] UserController controller) =>
-            {
-                var user = await controller.GetUser(id);
-                return user is null ? Results.NotFound() : Results.Ok(user);
-            });
-
-            group.MapPut("/{id}", async (int id, [FromBody] UpdateUserDto updateDto, [FromServices] UserController controller) =>
-            {
-                var user = await controller.UpdateUser(id, updateDto);
-                return user is null ? Results.NotFound() : Results.Ok(user);
-            });
-
-            group.MapDelete("/{id}", async (int id, [FromServices] UserController controller) =>
-            {
-                var deleted = await controller.DeleteUser(id);
-                return deleted ? Results.NoContent() : Results.NotFound();
-            });
-
-            group.MapGet("/stats", async ([FromServices] UserController controller) =>
-            {
-                var stats = await controller.GetUserStats();
-                return Results.Ok(stats);
-            });
-        }
+            return result ? Results.NoContent() : Results.NotFound();
+        });
     }
-} 
+}
+

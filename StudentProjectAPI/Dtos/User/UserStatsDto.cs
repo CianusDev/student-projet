@@ -12,9 +12,5 @@ namespace StudentProjectAPI.Dtos.User
         public int PendingProjects { get; set; }
         public int TotalGroups { get; set; }
         public double AverageGrade { get; set; }
-        public int TotalUsers { get; set; }
-        public int ActiveUsers { get; set; }
-        public int Teachers { get; set; }
-        public int Students { get; set; }
     }
 }
