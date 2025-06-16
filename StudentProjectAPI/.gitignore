@@ -1,21 +1,43 @@
-# Binaries
-*.dll
-*.exe
-*.pdb
-
-# Object files
-obj/
+# Build results
 bin/
+obj/
 
-# Package manager files (e.g., NuGet)
-*.nupkg
-
-# Temporary files
-*~
-
-# VS Code settings (optional)
+# VS Code
 .vscode/
 
 # User-specific files
 *.user
-*.suo 
+*.suo
+
+# Package manager files
+*.nupkg
+packages/
+
+# Database files
+*.db
+
+# Logs
+*.log
+
+# Temporary files
+*~
+
+# Dotnet specific
+project.lock.json
+project.fragment.lock.json
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider IDE
+.idea/
+
+# Visual Studio Code workspace
+*.code-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
