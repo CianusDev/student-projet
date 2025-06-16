@@ -1,5 +1,5 @@
-using StudentProjectAPI.Dtos.User;
-using StudentProjectAPI.Models;
+using System.Threading.Tasks;
+using StudentProjectAPI.Dtos.Auth;
 
 namespace StudentProjectAPI.Services
 {
@@ -7,8 +7,9 @@ namespace StudentProjectAPI.Services
     {
         Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto);
         Task<AuthResponseDto> LoginAsync(LoginUserDto loginDto);
-        Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto changePasswordDto);
-        Task<bool> DeleteUserAsync(int currentUserId, int targetUserId);
-        string GenerateJwtToken(User user);
+        Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto);
+        Task<bool> DeleteUserAsync(int userId);
     }
 }
+
+

@@ -2,8 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StudentProjectAPI.Data;
+using StudentProjectAPI.Dtos.Auth;
 using StudentProjectAPI.Dtos.User;
 using StudentProjectAPI.Models;
 
@@ -23,7 +25,9 @@ namespace StudentProjectAPI.Services
         public async Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto)
         {
             if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
+            {
                 throw new Exception("Cet email est déjà utilisé.");
+            }
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
@@ -62,7 +66,9 @@ namespace StudentProjectAPI.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+            {
                 throw new Exception("Email ou mot de passe incorrect.");
+            }
 
             var token = GenerateJwtToken(user);
 
@@ -84,11 +90,16 @@ namespace StudentProjectAPI.Services
         public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto changePasswordDto)
         {
             var user = await _context.Users.FindAsync(userId);
+
             if (user == null)
+            {
                 throw new Exception("Utilisateur non trouvé.");
+            }
 
             if (!BCrypt.Net.BCrypt.Verify(changePasswordDto.CurrentPassword, user.PasswordHash))
+            {
                 throw new Exception("Mot de passe actuel incorrect.");
+            }
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
             await _context.SaveChangesAsync();
@@ -96,18 +107,7 @@ namespace StudentProjectAPI.Services
             return true;
         }
 
-        public async Task<bool> DeleteUserAsync(int currentUserId, int targetUserId)
-        {
-            var user = await _context.Users.FindAsync(targetUserId);
-            if (user == null)
-                return false;
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        private string GenerateJwtToken(User user)
+        public string GenerateJwtToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")));
@@ -130,6 +130,17 @@ namespace StudentProjectAPI.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return false;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

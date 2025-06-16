@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StudentProjectAPI.Dtos.User;
-using StudentProjectAPI.Routes;
+using StudentProjectAPI.Dtos.Auth;
 using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers
 {
+    /// <summary>
+    /// Contrôleur gérant l'authentification des utilisateurs
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
@@ -17,13 +18,16 @@ namespace StudentProjectAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost(AuthRoutes.Auth.Register)]
-        public async Task<ActionResult<AuthResponseDto>> Register(RegisterUserDto registerDto)
+        /// <summary>
+        /// Inscription d’un nouvel utilisateur
+        /// </summary>
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
         {
             try
             {
-                var response = await _authService.RegisterAsync(registerDto);
-                return Ok(response);
+                var result = await _authService.RegisterAsync(registerDto);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -31,50 +35,36 @@ namespace StudentProjectAPI.Controllers
             }
         }
 
-        [HttpPost(AuthRoutes.Auth.Login)]
-        public async Task<ActionResult<AuthResponseDto>> Login(LoginUserDto loginDto)
+        /// <summary>
+        /// Connexion d’un utilisateur
+        /// </summary>
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto)
         {
             try
             {
-                var response = await _authService.LoginAsync(loginDto);
-                return Ok(response);
+                var result = await _authService.LoginAsync(loginDto);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return Unauthorized(new { message = ex.Message });
             }
         }
 
-        [Authorize]
-        [HttpPost(AuthRoutes.Auth.ChangePassword)]
-        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        /// <summary>
+        /// Changement de mot de passe pour un utilisateur
+        /// </summary>
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromQuery] int userId, [FromBody] ChangePasswordDto dto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
-                var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
-                return Ok(new { message = "Mot de passe modifié avec succès" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+                var result = await _authService.ChangePasswordAsync(userId, dto);
+                if (!result)
+                    return BadRequest(new { message = "Échec du changement de mot de passe." });
 
-        // ✅ Endpoint pour supprimer un utilisateur (accessible uniquement aux administrateurs ou enseignants, à adapter)
-        [Authorize(Roles = "Admin,Teacher")] // ← Tu peux adapter les rôles selon ton besoin
-        [HttpDelete(AuthRoutes.Auth.DeleteUser + "/{id:int}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            try
-            {
-                var success = await _authService.DeleteUserAsync(id);
-                if (!success)
-                {
-                    return NotFound(new { message = "Utilisateur non trouvé." });
-                }
-
-                return NoContent(); // 204, pas besoin de message dans le body
+                return Ok(new { message = "Mot de passe modifié avec succès." });
             }
             catch (Exception ex)
             {

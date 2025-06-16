@@ -184,6 +184,7 @@ namespace StudentProjectAPI.Data
                     Role = "Student",
                     CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 },
+                
                 new User 
                 { 
                     Id = 4, 

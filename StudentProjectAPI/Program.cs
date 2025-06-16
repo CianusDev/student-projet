@@ -3,36 +3,67 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StudentProjectAPI.Controllers;
 using StudentProjectAPI.Data;
+using StudentProjectAPI.Endpoints;
 using StudentProjectAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Ajout des contrôleurs et endpoints
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+// 📦 Base de données SQLite
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Swagger avec support JWT
+// 🔐 Authentification JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtKey = builder.Configuration["Jwt:Key"];
+        if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+        {
+            throw new InvalidOperationException("La clé JWT doit contenir au moins 32 caractères.");
+        }
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+// 🔒 Autorisation par rôles
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireTeacherRole", policy => policy.RequireRole("Teacher"));
+    options.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
+});
+
+// 🧩 Services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<AuthController>();
+builder.Services.AddScoped<ProjectController>();
+
+// 📚 Swagger avec JWT
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Student Project API",
-        Version = "v1",
-        Description = "API pour la gestion des projets étudiants"
-    });
-
-    // Définition du schéma JWT Bearer
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Student Project API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Exemple : \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
     });
-
-    // Ajout de la sécurité dans Swagger
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -49,50 +80,24 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configuration de la base de données SQLite
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Configuration de l'authentification JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var key = builder.Configuration["Jwt:Key"] 
-                  ?? throw new InvalidOperationException("JWT Key is missing in appsettings.json");
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-        };
-    });
-
-// Injection des dépendances
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 var app = builder.Build();
 
-// Swagger en développement
+// 🧪 Swagger (dev uniquement)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student Project API v1");
-    });
+    app.UseSwaggerUI();
 }
 
-// Middleware pour authentification et autorisation
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// 📌 Mapping des endpoints minimal API
+app.MapAuthEndpoints();
+app.MapProjectEndpoints();
+app.MapUserEndpoints(); // ✅ Important !
 
 app.Run();
+
 
