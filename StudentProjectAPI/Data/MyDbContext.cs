@@ -1,44 +1,50 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudentProjectAPI.Models;
 
 namespace StudentProjectAPI.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User>(options)
     {
-
-        // DbSets
-        public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<ProjectAssignment> ProjectAssignments { get; set; }
-        public DbSet<DeliverableType> DeliverableTypes { get; set; }
-        public DbSet<ProjectDeliverable> ProjectDeliverables { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Evaluation> Evaluations { get; set; }
         public DbSet<DeliverableEvaluation> DeliverableEvaluations { get; set; }
+        public DbSet<ProjectDeliverable> ProjectDeliverables { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuration des relations et contraintes
+            // Configuration des propriétés de l'utilisateur
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.LastName).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.Specialite).IsRequired();
+                entity.Property(u => u.NiveauEtude).IsRequired();
+                entity.Property(u => u.Departement).IsRequired();
+                entity.Property(u => u.CreatedAt).IsRequired();
+                entity.Property(u => u.IsActive).IsRequired();
+            });
 
-            // User - Projects (One-to-Many)
+            // Configuration des relations
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Teacher)
                 .WithMany(u => u.TeacherProjects)
                 .HasForeignKey(p => p.TeacherId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Project - Groups (One-to-Many)
             modelBuilder.Entity<Group>()
                 .HasOne(g => g.Project)
                 .WithMany(p => p.Groups)
                 .HasForeignKey(g => g.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Group - GroupMembers (One-to-Many)
             modelBuilder.Entity<GroupMember>()
                 .HasOne(gm => gm.Group)
                 .WithMany(g => g.Members)
@@ -51,147 +57,79 @@ namespace StudentProjectAPI.Data
                 .HasForeignKey(gm => gm.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Index unique pour éviter les doublons GroupId + StudentId
-            modelBuilder.Entity<GroupMember>()
-                .HasIndex(gm => new { gm.GroupId, gm.StudentId })
-                .IsUnique();
-
-            // ProjectAssignment relations
-            modelBuilder.Entity<ProjectAssignment>()
-                .HasOne(pa => pa.Project)
-                .WithMany(p => p.Assignments)
-                .HasForeignKey(pa => pa.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ProjectAssignment>()
-                .HasOne(pa => pa.Student)
-                .WithMany(u => u.IndividualAssignments)
-                .HasForeignKey(pa => pa.StudentId)
-                .OnDelete(DeleteBehavior.SetNull);
-
             modelBuilder.Entity<ProjectAssignment>()
                 .HasOne(pa => pa.Group)
                 .WithMany(g => g.Assignments)
                 .HasForeignKey(pa => pa.GroupId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // ProjectDeliverable relations
-            modelBuilder.Entity<ProjectDeliverable>()
-                .HasOne(pd => pd.Project)
-                .WithMany(p => p.Deliverables)
-                .HasForeignKey(pd => pd.ProjectId)
+            modelBuilder.Entity<ProjectAssignment>()
+                .HasOne(pa => pa.Student)
+                .WithMany(u => u.IndividualAssignments)
+                .HasForeignKey(pa => pa.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ProjectDeliverable>()
-                .HasOne(pd => pd.DeliverableType)
-                .WithMany(dt => dt.ProjectDeliverables)
-                .HasForeignKey(pd => pd.DeliverableTypeId);
-
-            // Submission relations
-            modelBuilder.Entity<Submission>()
-                .HasOne(s => s.Assignment)
-                .WithMany(pa => pa.Submissions)
-                .HasForeignKey(s => s.AssignmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Submission>()
-                .HasOne(s => s.Deliverable)
-                .WithMany(pd => pd.Submissions)
-                .HasForeignKey(s => s.DeliverableId);
-
-            modelBuilder.Entity<Submission>()
-                .HasOne(s => s.SubmittedByStudent)
-                .WithMany(u => u.Submissions)
-                .HasForeignKey(s => s.SubmittedByStudentId);
-
-            // Evaluation relations
-            modelBuilder.Entity<Evaluation>()
-                .HasOne(e => e.Assignment)
-                .WithMany(pa => pa.Evaluations)
-                .HasForeignKey(e => e.AssignmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Evaluation>()
-                .HasOne(e => e.Teacher)
-                .WithMany(u => u.Evaluations)
-                .HasForeignKey(e => e.TeacherId);
-
-            // DeliverableEvaluation relations
-            modelBuilder.Entity<DeliverableEvaluation>()
-                .HasOne(de => de.Evaluation)
-                .WithMany(e => e.DeliverableEvaluations)
-                .HasForeignKey(de => de.EvaluationId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<DeliverableEvaluation>()
-                .HasOne(de => de.Submission)
-                .WithMany(s => s.Evaluations)
-                .HasForeignKey(de => de.SubmissionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Index unique pour Email
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
-
-            // Index unique pour DeliverableType Name
-            modelBuilder.Entity<DeliverableType>()
-                .HasIndex(dt => dt.Name)
-                .IsUnique();
-
-            // Seed data - Types de livrables
-            modelBuilder.Entity<DeliverableType>().HasData(
-                new DeliverableType { Id = 1, Name = "Rapport", AllowedExtensions = ".pdf,.doc,.docx", MaxFileSize = 10 },
-                new DeliverableType { Id = 2, Name = "Code Source", AllowedExtensions = ".zip,.rar,.tar.gz", MaxFileSize = 50 },
-                new DeliverableType { Id = 3, Name = "Présentation", AllowedExtensions = ".ppt,.pptx,.pdf", MaxFileSize = 20 },
-                new DeliverableType { Id = 4, Name = "Vidéo", AllowedExtensions = ".mp4,.avi,.mov", MaxFileSize = 100 },
-                new DeliverableType { Id = 5, Name = "Image", AllowedExtensions = ".jpg,.jpeg,.png", MaxFileSize = 5 }
+            // Configuration des rôles par défaut avec des valeurs statiques
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole 
+                { 
+                    Id = "1", 
+                    Name = "Teacher", 
+                    NormalizedName = "TEACHER", 
+                    ConcurrencyStamp = "64d8b44a-cdbb-40c7-99c4-8a6e576d0db2"
+                },
+                new IdentityRole 
+                { 
+                    Id = "2", 
+                    Name = "Student", 
+                    NormalizedName = "STUDENT", 
+                    ConcurrencyStamp = "7a7c67c5-24b0-4334-a55b-0ac32a70512a"
+                }
             );
 
-            // Données de test
+            // Données de test pour les utilisateurs avec des valeurs statiques
             modelBuilder.Entity<User>().HasData(
-                new User 
-                { 
-                    Id = 1, 
-                    Email = "prof@school.com", 
-                    PasswordHash = "hashedpassword1", 
-                    FirstName = "Jean", 
-                    LastName = "Dupont", 
-                    Role = "Teacher",
-                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                new User
+                {
+                    Id = "1",
+                    UserName = "prof@school.com",
+                    Email = "prof@school.com",
+                    EmailConfirmed = true,
+                    FirstName = "Jean",
+                    LastName = "Dupont",
+                    Specialite = "Informatique",
+                    NiveauEtude = "Master",
+                    Departement = "Informatique",
+                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    IsActive = true,
+                    PasswordHash = "AQAAAAIAAYagAAAAEPAr1rWjJPEyI0IP1uT7o7np6PWVz1bB4iVLaggbi6QNfeGGJBhQHYz3H2nprmMBWA==",
+                    SecurityStamp = "27baea37-f970-4bb5-a413-d3e5e5078e13",
+                    ConcurrencyStamp = "fef42b2f-1418-45c9-83c7-89356a7e3e32"
                 },
-                new User 
-                { 
-                    Id = 2, 
-                    Email = "student1@school.com", 
-                    PasswordHash = "hashedpassword2", 
-                    FirstName = "Marie", 
-                    LastName = "Martin", 
-                    Role = "Student",
-                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                },
-                new User 
-                { 
-                    Id = 3, 
-                    Email = "student2@school.com", 
-                    PasswordHash = "hashedpassword3", 
-                    FirstName = "Pierre", 
-                    LastName = "Durand", 
-                    Role = "Student",
-                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                },
-                
-                new User 
-                { 
-                    Id = 4, 
-                    Email = "student3@school.com", 
-                    PasswordHash = "hashedpassword4", 
-                    FirstName = "Sophie", 
-                    LastName = "Bernard", 
-                    Role = "Student",
-                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                new User
+                {
+                    Id = "2",
+                    UserName = "student1@school.com",
+                    Email = "student1@school.com",
+                    EmailConfirmed = true,
+                    FirstName = "Marie",
+                    LastName = "Martin",
+                    Specialite = "Informatique",
+                    NiveauEtude = "Licence",
+                    Departement = "Informatique",
+                    CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    IsActive = true,
+                    PasswordHash = "AQAAAAIAAYagAAAAEPAr1rWjJPEyI0IP1uT7o7np6PWVz1bB4iVLaggbi6QNfeGGJBhQHYz3H2nprmMBWA==",
+                    SecurityStamp = "27baea37-f970-4bb5-a413-d3e5e5078e13",
+                    ConcurrencyStamp = "fef42b2f-1418-45c9-83c7-89356a7e3e32"
                 }
+            );
+
+            // Attribution des rôles aux utilisateurs
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string> { UserId = "1", RoleId = "1" },
+                new IdentityUserRole<string> { UserId = "2", RoleId = "2" }
             );
         }
     }
-}
+} 

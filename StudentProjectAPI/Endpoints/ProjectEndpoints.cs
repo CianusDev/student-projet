@@ -18,7 +18,11 @@ namespace StudentProjectAPI.Endpoints
             {
                 try
                 {
-                    var userId = int.Parse(context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                    var userId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        return Results.Unauthorized();
+                    }
                     var project = await controller.CreateProject(dto, userId);
                     return Results.Created($"/api/projects/{project.Id}", project);
                 }
@@ -73,11 +77,16 @@ namespace StudentProjectAPI.Endpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized);
 
-            group.MapPut("/{id}", async (int id, UpdateProjectDto dto, [FromServices] ProjectController controller) =>
+            group.MapPut("/{id}", async (int id, UpdateProjectDto dto, [FromServices] ProjectController controller, HttpContext context) =>
             {
                 try
                 {
-                    var project = await controller.UpdateProject(id, dto);
+                    var teacherId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    if (string.IsNullOrEmpty(teacherId))
+                    {
+                        return Results.Unauthorized();
+                    }
+                    var project = await controller.UpdateProject(id, dto, teacherId);
                     return project is null ? Results.NotFound(new { message = "Projet non trouvé" }) : Results.Ok(project);
                 }
                 catch (Exception ex)
@@ -95,11 +104,16 @@ namespace StudentProjectAPI.Endpoints
             .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
 
-            group.MapDelete("/{id}", async (int id, [FromServices] ProjectController controller) =>
+            group.MapDelete("/{id}", async (int id, [FromServices] ProjectController controller, HttpContext context) =>
             {
                 try
                 {
-                    var result = await controller.DeleteProject(id);
+                    var teacherId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    if (string.IsNullOrEmpty(teacherId))
+                    {
+                        return Results.Unauthorized();
+                    }
+                    var result = await controller.DeleteProject(id, teacherId);
                     return result ? Results.NoContent() : Results.NotFound(new { message = "Projet non trouvé" });
                 }
                 catch (Exception ex)

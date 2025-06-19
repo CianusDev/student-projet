@@ -12,25 +12,29 @@ namespace StudentProjectAPI.Models
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
         
-        public string? Description { get; set; }
+        [Required]
+        public string Description { get; set; } = string.Empty;
         
         [Required]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; } = string.Empty;
+        
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         [Required]
         public DateTime DueDate { get; set; }
         
-        public int MaxPoints { get; set; } = 20;
+        [Required]
+        public bool IsGroupProject { get; set; }
         
-        public bool IsGroupProject { get; set; } = false;
+        public int? MaxGroupSize { get; set; }
         
-        public int MaxGroupSize { get; set; } = 4;
-        
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public bool IsActive { get; set; } = true;
         
         // Navigation properties
         [ForeignKey("TeacherId")]
-        public virtual User Teacher { get; set; } = null!;
+        public User Teacher { get; set; } = null!;
         public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
         public virtual ICollection<ProjectAssignment> Assignments { get; set; } = new List<ProjectAssignment>();
         public virtual ICollection<ProjectDeliverable> Deliverables { get; set; } = new List<ProjectDeliverable>();

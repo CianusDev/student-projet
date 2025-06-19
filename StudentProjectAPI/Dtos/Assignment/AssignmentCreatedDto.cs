@@ -10,7 +10,7 @@ public class AssignmentCreatedDto
     public int StudentId { get; set; }
     public string StudentName { get; set; } = string.Empty;
     public int? GroupId { get; set; }
-    public string? GroupName { get; set; }
+    public string? Name { get; set; }
     public string Status { get; set; } = "Assigned";
     public DateTime AssignedAt { get; set; }
 } 

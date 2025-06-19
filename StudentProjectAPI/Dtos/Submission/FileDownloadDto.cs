@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
-namespace StudentProjectAPI.DTOs.Submission
+namespace StudentProjectAPI.Dtos.Submission
 {
 
 

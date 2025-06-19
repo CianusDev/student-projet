@@ -11,11 +11,12 @@ namespace StudentProjectAPI.Dtos.Group
     {
         public int Id { get; set; }
         public int ProjectId { get; set; }
-        public string ProjectTitle { get; set; } = string.Empty;
-        public string GroupName { get; set; } = string.Empty;
+        public string ProjectName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public List<GroupMemberDto> Members { get; set; } = new();
-        public UserDto? Leader => Members.FirstOrDefault(m => m.IsLeader)?.Student;
+        public string? LeaderId => Members.FirstOrDefault(m => m.IsLeader)?.StudentId;
+        public string? LeaderName => Members.FirstOrDefault(m => m.IsLeader)?.StudentName;
         public int MemberCount => Members.Count;
     }
 }

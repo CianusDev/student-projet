@@ -17,7 +17,7 @@ namespace StudentProjectAPI.Models
         
         [Required]
         [StringLength(100)]
-        public string GroupName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         

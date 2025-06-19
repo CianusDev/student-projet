@@ -1,4 +1,5 @@
 @StudentProjectAPI_HostAddress = http://localhost:5011
+@submission_id = "1"
 
 ### Inscription d'un nouvel utilisateur
 POST {{StudentProjectAPI_HostAddress}}/api/auth/register
@@ -41,12 +42,12 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Obtenir un utilisateur par ID (nécessite un token JWT)
-GET {{StudentProjectAPI_HostAddress}}/api/user/1
+GET {{StudentProjectAPI_HostAddress}}/api/user/{{user_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Mettre à jour un utilisateur (nécessite un token JWT)
-PUT {{StudentProjectAPI_HostAddress}}/api/user/1
+PUT {{StudentProjectAPI_HostAddress}}/api/user/{{user_id}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 Accept: application/json
@@ -58,7 +59,7 @@ Accept: application/json
 }
 
 ### Supprimer un utilisateur (nécessite un token JWT)
-DELETE {{StudentProjectAPI_HostAddress}}/api/user/1
+DELETE {{StudentProjectAPI_HostAddress}}/api/user/{{user_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
@@ -73,7 +74,7 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Obtenir un projet par ID (nécessite un token JWT)
-GET {{StudentProjectAPI_HostAddress}}/api/projects/1
+GET {{StudentProjectAPI_HostAddress}}/api/projects/{{project_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
@@ -93,7 +94,7 @@ Accept: application/json
 }
 
 ### Mettre à jour un projet (nécessite un token JWT de Teacher)
-PUT {{StudentProjectAPI_HostAddress}}/api/projects/1
+PUT {{StudentProjectAPI_HostAddress}}/api/projects/{{project_id}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 Accept: application/json
@@ -108,7 +109,7 @@ Accept: application/json
 }
 
 ### Supprimer un projet (nécessite un token JWT de Teacher)
-DELETE {{StudentProjectAPI_HostAddress}}/api/projects/1
+DELETE {{StudentProjectAPI_HostAddress}}/api/projects/{{project_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
@@ -118,7 +119,7 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Obtenir un groupe par ID (nécessite un token JWT)
-GET {{StudentProjectAPI_HostAddress}}/api/group/1
+GET {{StudentProjectAPI_HostAddress}}/api/group/{{group_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
@@ -129,57 +130,68 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "projectId": 1,
+    "projectId": "{{project_id}}",
     "groupName": "Groupe Alpha",
-    "memberIds": [1, 2, 3],
-    "leaderId": 1
+    "memberIds": ["{{student_id_1}}", "{{student_id_2}}", "{{student_id_3}}"],
+    "leaderId": "{{student_id_1}}"
 }
 
 ### Mettre à jour un groupe (nécessite un token JWT)
-PUT {{StudentProjectAPI_HostAddress}}/api/group/1
+PUT {{StudentProjectAPI_HostAddress}}/api/group/{{group_id}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 Accept: application/json
 
 {
     "groupName": "Groupe Alpha (Mise à jour)",
-    "leaderId": 2
+    "leaderId": "{{student_id_2}}"
 }
 
 ### Supprimer un groupe (nécessite un token JWT)
-DELETE {{StudentProjectAPI_HostAddress}}/api/group/1
+DELETE {{StudentProjectAPI_HostAddress}}/api/group/{{group_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Ajouter un membre à un groupe (nécessite un token JWT)
-POST {{StudentProjectAPI_HostAddress}}/api/group/1/members
+POST {{StudentProjectAPI_HostAddress}}/api/group/{{group_id}}/members
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "studentId": 4,
+    "studentId": "{{student_id_4}}",
     "isLeader": false
 }
 
 ### Supprimer un membre d'un groupe (nécessite un token JWT)
-DELETE {{StudentProjectAPI_HostAddress}}/api/group/1/members/4
+DELETE {{StudentProjectAPI_HostAddress}}/api/group/{{group_id}}/members/{{student_id_4}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Obtenir les groupes d'un étudiant (nécessite un token JWT)
-GET {{StudentProjectAPI_HostAddress}}/api/group/student/1
+GET {{StudentProjectAPI_HostAddress}}/api/group/student/{{student_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Variables d'environnement
 @auth_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJwcm9mQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVGVhY2hlciIsImV4cCI6MTc1MDEwMTMzNCwiaXNzIjoiU3R1ZGVudFByb2plY3RBUEkiLCJhdWQiOiJTdHVkZW50UHJvamVjdENsaWVudCJ9.ch15exWNIEzkiclC_7Ae0Fyu7XPUrmRBqlFGOCgcsk4
 
+### Variables pour les IDs
+@user_id = "1"
+@project_id = "1"
+@group_id = "1"
+@student_id = "1"
+@student_id_1 = "1"
+@student_id_2 = "2"
+@student_id_3 = "3"
+@student_id_4 = "4"
+@assignment_id = "1"
+
 ### Exemples de réponses
 
 ### Réponse de création de projet
 # {
-#     "id": 1,
+#     "id": "1",
 #     "title": "Projet Web - E-commerce",
 #     "description": "Développer une application e-commerce complète...",
 #     "createdAt": "2024-03-15T10:30:00Z",
@@ -193,18 +205,18 @@ Accept: application/json
 
 ### Réponse de création de groupe
 # {
-#     "id": 1,
-#     "projectId": 1,
+#     "id": "1",
+#     "projectId": "1",
 #     "projectTitle": "Projet Web - E-commerce",
 #     "groupName": "Groupe Alpha",
 #     "createdAt": "2024-03-15T10:30:00Z",
 #     "members": [
 #         {
-#             "id": 1,
-#             "groupId": 1,
-#             "studentId": 1,
+#             "id": "1",
+#             "groupId": "1",
+#             "studentId": "1",
 #             "student": {
-#                 "id": 1,
+#                 "id": "1",
 #                 "email": "student1@example.com",
 #                 "firstName": "John",
 #                 "lastName": "Doe",
@@ -218,9 +230,9 @@ Accept: application/json
 
 ### Réponse de groupe d'étudiant
 # {
-#     "groupId": 1,
+#     "groupId": "1",
 #     "groupName": "Groupe Alpha",
-#     "projectId": 1,
+#     "projectId": "1",
 #     "projectTitle": "Projet Web - E-commerce",
 #     "isLeader": true,
 #     "joinedAt": "2024-03-15T10:30:00Z",
@@ -258,7 +270,7 @@ Accept: application/json
 ### Réponse de liste d'assignations
 # [
 #     {
-#         "id": 1,
+#         "id": "1",
 #         "projectTitle": "Projet Web - E-commerce",
 #         "studentName": "John Doe",
 #         "groupName": "Groupe Alpha",
@@ -269,16 +281,16 @@ Accept: application/json
 
 ### Récupérer une assignation spécifique
 # @name getAssignment
-GET {{StudentProjectAPI_HostAddress}}/api/assignment/1
+GET {{StudentProjectAPI_HostAddress}}/api/assignment/{{assignment_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Réponse d'assignation spécifique
 # {
-#     "id": 1,
-#     "projectId": 1,
+#     "id": "1",
+#     "projectId": "1",
 #     "project": {
-#         "id": 1,
+#         "id": "1",
 #         "title": "Projet Web - E-commerce",
 #         "description": "Développer une application e-commerce complète...",
 #         "createdAt": "2024-03-15T10:30:00Z",
@@ -287,29 +299,29 @@ Accept: application/json
 #         "isGroupProject": true,
 #         "maxGroupSize": 3
 #     },
-#     "studentId": 1,
+#     "studentId": "1",
 #     "student": {
-#         "id": 1,
+#         "id": "1",
 #         "email": "student1@example.com",
 #         "firstName": "John",
 #         "lastName": "Doe",
 #         "role": "Student",
 #         "createdAt": "2024-03-15T10:30:00Z"
 #     },
-#     "groupId": 1,
+#     "groupId": "1",
 #     "group": {
-#         "id": 1,
-#         "projectId": 1,
+#         "id": "1",
+#         "projectId": "1",
 #         "projectTitle": "Projet Web - E-commerce",
 #         "groupName": "Groupe Alpha",
 #         "createdAt": "2024-03-15T10:30:00Z",
 #         "members": [
 #             {
-#                 "id": 1,
-#                 "groupId": 1,
-#                 "studentId": 1,
+#                 "id": "1",
+#                 "groupId": "1",
+#                 "studentId": "1",
 #                 "student": {
-#                     "id": 1,
+#                     "id": "1",
 #                     "email": "student1@example.com",
 #                     "firstName": "John",
 #                     "lastName": "Doe",
@@ -330,14 +342,14 @@ Accept: application/json
 
 ### Récupérer les assignations d'un étudiant
 # @name getStudentAssignments
-GET {{StudentProjectAPI_HostAddress}}/api/assignment/student/1
+GET {{StudentProjectAPI_HostAddress}}/api/assignment/student/{{student_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Réponse des assignations d'un étudiant
 # [
 #     {
-#         "id": 1,
+#         "id": "1",
 #         "projectTitle": "Projet Web - E-commerce",
 #         "studentName": "John Doe",
 #         "groupName": "Groupe Alpha",
@@ -348,14 +360,14 @@ Accept: application/json
 
 ### Récupérer les assignations d'un groupe
 # @name getGroupAssignments
-GET {{StudentProjectAPI_HostAddress}}/api/assignment/group/1
+GET {{StudentProjectAPI_HostAddress}}/api/assignment/group/{{group_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
 ### Réponse des assignations d'un groupe
 # [
 #     {
-#         "id": 1,
+#         "id": "1",
 #         "projectTitle": "Projet Web - E-commerce",
 #         "studentName": "John Doe",
 #         "groupName": "Groupe Alpha",
@@ -373,31 +385,31 @@ Accept: application/json
 
 # Exemple 1: Assignation à un étudiant individuel
 {
-    "projectId": 1,
-    "studentId": 1
+    "projectId": "{{project_id}}",
+    "studentId": "{{student_id}}"
 }
 
 # Exemple 2: Assignation à un groupe
 {
-    "projectId": 1,
-    "groupId": 1
+    "projectId": "{{project_id}}",
+    "groupId": "{{group_id}}"
 }
 
 # Exemple 3: Assignation à un étudiant dans un groupe
 {
-    "projectId": 1,
-    "studentId": 1,
-    "groupId": 1
+    "projectId": "{{project_id}}",
+    "studentId": "{{student_id}}",
+    "groupId": "{{group_id}}"
 }
 
 ### Réponse de création d'assignation
 # {
-#     "id": 1,
-#     "projectId": 1,
+#     "id": "1",
+#     "projectId": "1",
 #     "projectTitle": "Projet Web - E-commerce",
-#     "studentId": 1,
+#     "studentId": "1",
 #     "studentName": "John Doe",
-#     "groupId": 1,
+#     "groupId": "1",
 #     "groupName": "Groupe Alpha",
 #     "status": "Assigned",
 #     "assignedAt": "2024-03-15T10:30:00Z"
@@ -416,7 +428,7 @@ Accept: application/json
 
 ### Mettre à jour le statut d'une assignation
 # @name updateAssignmentStatus
-PUT {{StudentProjectAPI_HostAddress}}/api/assignment/1/status
+PUT {{StudentProjectAPI_HostAddress}}/api/assignment/{{assignment_id}}/status
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 Accept: application/json
@@ -427,7 +439,7 @@ Accept: application/json
 
 ### Réponse de mise à jour du statut
 # {
-#     "id": 1,
+#     "id": "1",
 #     "status": "InProgress",
 #     "lastSubmissionDate": "2024-03-16T15:45:00Z",
 #     "submissionCount": 2,
@@ -436,7 +448,7 @@ Accept: application/json
 
 ### Supprimer une assignation (Enseignants uniquement)
 # @name deleteAssignment
-DELETE {{StudentProjectAPI_HostAddress}}/api/assignment/1
+DELETE {{StudentProjectAPI_HostAddress}}/api/assignment/{{assignment_id}}
 Authorization: Bearer {{auth_token}}
 Accept: application/json
 
@@ -463,3 +475,72 @@ Accept: application/json
 #         "status": ["Le statut doit être l'un des suivants : Assigned, InProgress, Submitted, Graded"]
 #     }
 # }
+
+### Soumissions de Livrables
+
+### Créer une soumission (étudiant)
+POST {{StudentProjectAPI_HostAddress}}/api/submission
+Authorization: Bearer {{auth_token}}
+Content-Type: multipart/form-data
+Accept: application/json
+
+# Exemple de body (form-data) :
+# assignmentId: 1
+# deliverableId: 2
+# comments: Voici mon rapport.
+# file: (sélectionner un fichier à uploader)
+
+### Récupérer une soumission par ID
+GET {{StudentProjectAPI_HostAddress}}/api/submission/{{submission_id}}
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Lister les soumissions d'une assignation
+GET {{StudentProjectAPI_HostAddress}}/api/submission/assignment/{{assignment_id}}
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Télécharger le fichier d'une soumission
+GET {{StudentProjectAPI_HostAddress}}/api/submission/download/{{submission_id}}
+Authorization: Bearer {{auth_token}}
+Accept: application/octet-stream
+
+### Réponse de création de soumission
+# {
+#     "id": 1,
+#     "assignmentId": 1,
+#     "deliverableId": 2,
+#     "deliverableTitle": "Rapport",
+#     "deliverableTypeName": "PDF",
+#     "submittedByStudentId": 2,
+#     "submittedByStudent": {
+#         "id": "2",
+#         "email": "student2@example.com",
+#         "firstName": "Marie",
+#         "lastName": "Martin",
+#         "createdAt": "2024-03-15T10:30:00Z"
+#     },
+#     "fileName": "rapport.pdf",
+#     "fileSize": 123456,
+#     "comments": "Voici mon rapport.",
+#     "submittedAt": "2024-06-18T12:00:00Z",
+#     "version": 1,
+#     "isLate": false,
+#     "evaluation": null
+# }
+
+### Réponse de liste de soumissions
+# [
+#   {
+#     "id": 1,
+#     "studentName": "Marie Martin",
+#     "groupName": "Groupe Alpha",
+#     "deliverableTitle": "Rapport",
+#     "fileName": "rapport.pdf",
+#     "submittedAt": "2024-06-18T12:00:00Z",
+#     "version": 1,
+#     "isLate": false,
+#     "isEvaluated": false,
+#     "grade": null
+#   }
+# ]

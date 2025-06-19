@@ -9,9 +9,9 @@ namespace StudentProjectAPI.Dtos.Group
     public class StudentGroupDto
     {
         public int GroupId { get; set; }
-        public string GroupName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public int ProjectId { get; set; }
-        public string ProjectTitle { get; set; } = string.Empty;
+        public string ProjectName { get; set; } = string.Empty;
         public bool IsLeader { get; set; }
         public DateTime JoinedAt { get; set; }
         public int MemberCount { get; set; }

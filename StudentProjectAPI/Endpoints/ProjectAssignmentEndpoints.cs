@@ -31,7 +31,7 @@ public static class ProjectAssignmentEndpoints
         .WithSummary("Get a specific project assignment")
         .RequireAuthorization();
 
-        group.MapGet("/student/{studentId}", async (int studentId, ProjectAssignmentController controller) =>
+        group.MapGet("/student/{studentId}", async (string studentId, ProjectAssignmentController controller) =>
         {
             var assignments = await controller.GetStudentAssignments(studentId);
             return assignments;
@@ -49,33 +49,43 @@ public static class ProjectAssignmentEndpoints
         .WithSummary("Get all assignments for a specific group")
         .RequireAuthorization();
 
-        group.MapPost("/", async (CreateAssignmentDto createDto, ProjectAssignmentController controller) =>
+        group.MapPost("/", async ([FromBody] CreateAssignmentDto dto, [FromServices] ProjectAssignmentController controller, HttpContext context) =>
         {
-            var result = await controller.CreateAssignment(createDto);
-            return result;
+            var teacherId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(teacherId))
+            {
+                return Results.Unauthorized();
+            }
+            var result = await controller.CreateAssignment(dto, teacherId);
+            return Results.Created($"/api/assignment/{result.Value?.Id}", result.Value);
         })
         .WithName("CreateAssignment")
         .WithSummary("Create a new project assignment")
         .RequireAuthorization(policy => policy.RequireRole("Admin", "Teacher"));
 
-        group.MapPut("/{id}/status", async (int id, UpdateAssignmentStatusDto updateDto, ProjectAssignmentController controller) =>
+        group.MapPut("/{id}/status", async (int id, [FromBody] UpdateAssignmentStatusDto dto, [FromServices] ProjectAssignmentController controller, HttpContext context) =>
         {
-            var result = await controller.UpdateAssignmentStatus(id, updateDto);
-            return result;
+            var teacherId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(teacherId))
+            {
+                return Results.Unauthorized();
+            }
+            var result = await controller.UpdateAssignmentStatus(id, dto, teacherId);
+            return result.Value is null ? Results.NotFound() : Results.Ok(result.Value);
         })
         .WithName("UpdateAssignmentStatus")
         .WithSummary("Update the status of a project assignment")
         .RequireAuthorization(policy => policy.RequireRole("Admin", "Teacher"));
 
-        group.MapDelete("/{id}", async (int id, ProjectAssignmentController controller) =>
+        group.MapDelete("/{id}", async (int id, [FromServices] ProjectAssignmentController controller, HttpContext context) =>
         {
-            var result = await controller.DeleteAssignment(id);
-            return result switch
+            var teacherId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(teacherId))
             {
-                NoContentResult => Results.NoContent(),
-                NotFoundResult => Results.NotFound(),
-                _ => Results.StatusCode(500)
-            };
+                return Results.Unauthorized();
+            }
+            var result = await controller.DeleteAssignment(id, teacherId);
+            return result is NoContentResult ? Results.NoContent() : Results.NotFound();
         })
         .WithName("DeleteAssignment")
         .WithSummary("Delete a project assignment")

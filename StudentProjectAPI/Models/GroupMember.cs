@@ -13,13 +13,15 @@ namespace StudentProjectAPI.Models
         public int Id { get; set; }
         
         [Required]
+        public string StudentId { get; set; } = string.Empty;
+        
+        [Required]
         public int GroupId { get; set; }
         
         [Required]
-        public int StudentId { get; set; }
+        public bool IsLeader { get; set; }
         
-        public bool IsLeader { get; set; } = false;
-        
+        [Required]
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         
         // Navigation properties

@@ -5,8 +5,6 @@ using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 public class ProjectAssignmentController(IProjectAssignmentService assignmentService) : ControllerBase
 {
     private readonly IProjectAssignmentService _assignmentService = assignmentService;
@@ -32,7 +30,7 @@ public class ProjectAssignmentController(IProjectAssignmentService assignmentSer
 
     [HttpGet("student/{studentId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<AssignmentListItemDto>>> GetStudentAssignments(int studentId)
+    public async Task<ActionResult<IEnumerable<AssignmentListItemDto>>> GetStudentAssignments(string studentId)
     {
         var assignments = await _assignmentService.GetStudentAssignmentsAsync(studentId);
         return Ok(assignments);
@@ -48,17 +46,17 @@ public class ProjectAssignmentController(IProjectAssignmentService assignmentSer
 
     [HttpPost]
     [Authorize(Roles = "Admin,Teacher")]
-    public async Task<ActionResult<AssignmentDto>> CreateAssignment(CreateAssignmentDto createDto)
+    public async Task<ActionResult<AssignmentDto>> CreateAssignment(CreateAssignmentDto createDto, string teacherId)
     {
-        var assignment = await _assignmentService.CreateAssignmentAsync(createDto);
+        var assignment = await _assignmentService.CreateAssignmentAsync(createDto, teacherId);
         return CreatedAtAction(nameof(GetAssignmentById), new { id = assignment.Id }, assignment);
     }
 
     [HttpPut("{id}/status")]
     [Authorize(Roles = "Admin,Teacher")]
-    public async Task<ActionResult<AssignmentStatusDto>> UpdateAssignmentStatus(int id, UpdateAssignmentStatusDto updateDto)
+    public async Task<ActionResult<AssignmentDto>> UpdateAssignmentStatus(int id, [FromBody] UpdateAssignmentStatusDto updateDto, string teacherId)
     {
-        var assignment = await _assignmentService.UpdateAssignmentStatusAsync(id, updateDto);
+        var assignment = await _assignmentService.UpdateAssignmentStatusAsync(id, updateDto, teacherId);
         if (assignment == null)
             return NotFound();
 
@@ -67,9 +65,9 @@ public class ProjectAssignmentController(IProjectAssignmentService assignmentSer
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin,Teacher")]
-    public async Task<IActionResult> DeleteAssignment(int id)
+    public async Task<ActionResult> DeleteAssignment(int id, string teacherId)
     {
-        var result = await _assignmentService.DeleteAssignmentAsync(id);
+        var result = await _assignmentService.DeleteAssignmentAsync(id, teacherId);
         if (!result)
             return NotFound();
 

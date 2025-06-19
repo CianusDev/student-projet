@@ -11,14 +11,170 @@ using StudentProjectAPI.Data;
 namespace StudentProjectAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250611193500_AddIsActiveToUser")]
-    partial class AddIsActiveToUser
+    [Migration("20250618005011_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            ConcurrencyStamp = "64d8b44a-cdbb-40c7-99c4-8a6e576d0db2",
+                            Name = "Teacher",
+                            NormalizedName = "TEACHER"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            ConcurrencyStamp = "7a7c67c5-24b0-4334-a55b-0ac32a70512a",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "1",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "2",
+                            RoleId = "2"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
 
             modelBuilder.Entity("StudentProjectAPI.Models.DeliverableEvaluation", b =>
                 {
@@ -72,47 +228,7 @@ namespace StudentProjectAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("DeliverableTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AllowedExtensions = ".pdf,.doc,.docx",
-                            MaxFileSize = 10,
-                            Name = "Rapport"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AllowedExtensions = ".zip,.rar,.tar.gz",
-                            MaxFileSize = 50,
-                            Name = "Code Source"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AllowedExtensions = ".ppt,.pptx,.pdf",
-                            MaxFileSize = 20,
-                            Name = "Présentation"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AllowedExtensions = ".mp4,.avi,.mov",
-                            MaxFileSize = 100,
-                            Name = "Vidéo"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AllowedExtensions = ".jpg,.jpeg,.png",
-                            MaxFileSize = 5,
-                            Name = "Image"
-                        });
+                    b.ToTable("DeliverableType");
                 });
 
             modelBuilder.Entity("StudentProjectAPI.Models.Evaluation", b =>
@@ -133,8 +249,9 @@ namespace StudentProjectAPI.Migrations
                     b.Property<decimal?>("OverallGrade")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TeacherId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -154,7 +271,7 @@ namespace StudentProjectAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("GroupName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
@@ -184,15 +301,15 @@ namespace StudentProjectAPI.Migrations
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("GroupId");
 
-                    b.HasIndex("GroupId", "StudentId")
-                        .IsUnique();
+                    b.HasIndex("StudentId");
 
                     b.ToTable("GroupMembers");
                 });
@@ -207,22 +324,24 @@ namespace StudentProjectAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsGroupProject")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MaxGroupSize")
+                    b.Property<int?>("MaxGroupSize")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MaxPoints")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TeacherId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -245,19 +364,20 @@ namespace StudentProjectAPI.Migrations
                     b.Property<DateTime>("AssignedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("GroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("StudentId")
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -305,7 +425,7 @@ namespace StudentProjectAPI.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectDeliverables");
+                    b.ToTable("ProjectDeliverable");
                 });
 
             modelBuilder.Entity("StudentProjectAPI.Models.Submission", b =>
@@ -337,8 +457,9 @@ namespace StudentProjectAPI.Migrations
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SubmittedByStudentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("SubmittedByStudentId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Version")
                         .HasColumnType("INTEGER");
@@ -356,17 +477,30 @@ namespace StudentProjectAPI.Migrations
 
             modelBuilder.Entity("StudentProjectAPI.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("Departement")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -381,68 +515,154 @@ namespace StudentProjectAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("NiveauEtude")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Specialite")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
 
-                    b.ToTable("Users");
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fef42b2f-1418-45c9-83c7-89356a7e3e32",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Departement = "Informatique",
                             Email = "prof@school.com",
+                            EmailConfirmed = true,
                             FirstName = "Jean",
                             IsActive = true,
                             LastName = "Dupont",
-                            PasswordHash = "hashedpassword1",
-                            Role = "Teacher"
+                            LockoutEnabled = false,
+                            NiveauEtude = "Master",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPAr1rWjJPEyI0IP1uT7o7np6PWVz1bB4iVLaggbi6QNfeGGJBhQHYz3H2nprmMBWA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "27baea37-f970-4bb5-a413-d3e5e5078e13",
+                            Specialite = "Informatique",
+                            TwoFactorEnabled = false,
+                            UserName = "prof@school.com"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fef42b2f-1418-45c9-83c7-89356a7e3e32",
                             CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Departement = "Informatique",
                             Email = "student1@school.com",
+                            EmailConfirmed = true,
                             FirstName = "Marie",
                             IsActive = true,
                             LastName = "Martin",
-                            PasswordHash = "hashedpassword2",
-                            Role = "Student"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "student2@school.com",
-                            FirstName = "Pierre",
-                            IsActive = true,
-                            LastName = "Durand",
-                            PasswordHash = "hashedpassword3",
-                            Role = "Student"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "student3@school.com",
-                            FirstName = "Sophie",
-                            IsActive = true,
-                            LastName = "Bernard",
-                            PasswordHash = "hashedpassword4",
-                            Role = "Student"
+                            LockoutEnabled = false,
+                            NiveauEtude = "Licence",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPAr1rWjJPEyI0IP1uT7o7np6PWVz1bB4iVLaggbi6QNfeGGJBhQHYz3H2nprmMBWA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "27baea37-f970-4bb5-a413-d3e5e5078e13",
+                            Specialite = "Informatique",
+                            TwoFactorEnabled = false,
+                            UserName = "student1@school.com"
                         });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("StudentProjectAPI.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("StudentProjectAPI.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentProjectAPI.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("StudentProjectAPI.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("StudentProjectAPI.Models.DeliverableEvaluation", b =>
@@ -544,7 +764,7 @@ namespace StudentProjectAPI.Migrations
                     b.HasOne("StudentProjectAPI.Models.User", "Student")
                         .WithMany("IndividualAssignments")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Group");
 
