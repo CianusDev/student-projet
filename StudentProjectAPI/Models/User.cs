@@ -1,26 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace StudentProjectAPI.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-        
-        [Required]
-        [StringLength(100)]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
-        
-        [Required]
-        [StringLength(255)]
-        public string PasswordHash { get; set; } = string.Empty;
-        
         [Required]
         [StringLength(50)]
         public string FirstName { get; set; } = string.Empty;
@@ -29,15 +16,13 @@ namespace StudentProjectAPI.Models
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
         
-        [Required]
-        [StringLength(20)]
-        public string Role { get; set; } = string.Empty; // Teacher, Student
-        
-
+        [StringLength(100)]
         public string Specialite { get; set; } = string.Empty;
 
+        [StringLength(50)]
         public string NiveauEtude { get; set; } = string.Empty;
 
+        [StringLength(100)]
         public string Departement { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

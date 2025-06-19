@@ -19,7 +19,7 @@ namespace StudentProjectAPI.Models
         public int DeliverableId { get; set; }
         
         [Required]
-        public int SubmittedByStudentId { get; set; }
+        public string SubmittedByStudentId { get; set; } = string.Empty;
         
         [StringLength(255)]
         public string? FileName { get; set; }
@@ -45,6 +45,6 @@ namespace StudentProjectAPI.Models
         [ForeignKey("SubmittedByStudentId")]
         public virtual User SubmittedByStudent { get; set; } = null!;
         
-        public virtual ICollection<DeliverableEvaluation> Evaluations { get; set; } = new List<DeliverableEvaluation>();
+        public virtual ICollection<DeliverableEvaluation> Evaluations { get; set; } = [];
     }
 }

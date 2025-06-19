@@ -14,7 +14,7 @@ namespace StudentProjectAPI.Dtos.Group
 
         [Required(ErrorMessage = "Le nom du groupe est requis")]
         [StringLength(100, ErrorMessage = "Le nom du groupe ne peut pas dépasser 100 caractères")]
-        public string GroupName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Au moins un membre est requis")]
         public List<int> MemberIds { get; set; } = new();

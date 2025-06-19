@@ -46,7 +46,7 @@ public static class AuthEndpoints
         // POST /api/auth/change-password
         group.MapPost("/change-password", async (ChangePasswordDto dto, [FromServices] AuthController controller, HttpContext context) =>
         {
-            var userId = int.Parse(context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var userId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0";
             var response = await controller.ChangePassword(userId, dto);
             return Results.Ok(response);
         })

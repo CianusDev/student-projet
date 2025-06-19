@@ -11,8 +11,8 @@ namespace StudentProjectAPI.Dtos.Group
     {
         public int Id { get; set; }
         public int GroupId { get; set; }
-        public int StudentId { get; set; }
-        public UserDto Student { get; set; } = null!;
+        public string StudentId { get; set; } = string.Empty;
+        public string StudentName { get; set; } = string.Empty;
         public bool IsLeader { get; set; }
         public DateTime JoinedAt { get; set; }
     }

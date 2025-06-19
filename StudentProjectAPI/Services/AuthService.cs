@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using StudentProjectAPI.Data;
 using StudentProjectAPI.Dtos.User;
@@ -12,45 +12,51 @@ namespace StudentProjectAPI.Services
     /// <summary>
     /// Constructeur du service d'authentification
     /// </summary>
-    /// <param name="context">Contexte de base de données</param>
+    /// <param name="userManager">Gestionnaire d'utilisateurs</param>
+    /// <param name="signInManager">Gestionnaire de connexion</param>
     /// <param name="configuration">Configuration de l'application</param>
-    public class AuthService(ApplicationDbContext context, IConfiguration configuration) : IAuthService
+    public class AuthService : IAuthService
     {
-        // Contexte de base de données pour accéder aux données des utilisateurs
-        private readonly ApplicationDbContext _context = context;
-        // Configuration pour accéder aux paramètres de l'application (comme la clé JWT)
-        private readonly IConfiguration _configuration = configuration;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly IConfiguration _configuration;
+
+        public AuthService(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IConfiguration configuration)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _configuration = configuration;
+        }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto)
         {
-            // Vérifier si l'email existe déjà
-            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
-            {
-                throw new Exception("Cet email est déjà utilisé.");
-            }
-
-            // Créer le hash du mot de passe
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-
-            // Créer le nouvel utilisateur
             var user = new User
             {
+                UserName = registerDto.Email,
                 Email = registerDto.Email,
-                PasswordHash = passwordHash,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
-                Role = registerDto.Role,
-                CreatedAt = DateTime.UtcNow,
                 Specialite = registerDto.Specialite,
                 Departement = registerDto.Departement,
                 NiveauEtude = registerDto.NiveauEtude,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            // Générer le token JWT
-            var token = GenerateJwtToken(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+
+            // Attribution du rôle
+            await _userManager.AddToRoleAsync(user, registerDto.Role);
+
+            var token = await GenerateJwtToken(user);
 
             return new AuthResponseDto
             {
@@ -61,7 +67,7 @@ namespace StudentProjectAPI.Services
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Role = user.Role,
+                    Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? string.Empty,
                     CreatedAt = user.CreatedAt
                 }
             };
@@ -69,61 +75,74 @@ namespace StudentProjectAPI.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginUserDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+            if (user == null)
             {
                 throw new Exception("Email ou mot de passe incorrect.");
             }
 
-            var token = GenerateJwtToken(user);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception("Email ou mot de passe incorrect.");
+            }
+
+            var token = await GenerateJwtToken(user);
 
             return new AuthResponseDto
             {
                 Token = token,
                 User = new UserDto
                 {
-                    Id = user.Id,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Role = user.Role,
+                    Id = user.Id ?? string.Empty,
+                    Email = user.Email ?? string.Empty,
+                    FirstName = user.FirstName ?? string.Empty,
+                    LastName = user.LastName ?? string.Empty,
+                    Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? string.Empty,
                     CreatedAt = user.CreatedAt
                 }
             };
         }
 
-        public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto changePasswordDto)
+        public async Task<bool> ChangePasswordAsync(string userId, ChangePasswordDto changePasswordDto)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
                 throw new Exception("Utilisateur non trouvé.");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(changePasswordDto.CurrentPassword, user.PasswordHash))
-            {
-                throw new Exception("Mot de passe actuel incorrect.");
-            }
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                changePasswordDto.CurrentPassword,
+                changePasswordDto.NewPassword
+            );
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
-            await _context.SaveChangesAsync();
+            if (!result.Succeeded)
+            {
+                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
 
             return true;
         }
 
-        public string GenerateJwtToken(User user)
+        public async Task<string> GenerateJwtToken(User user)
         {
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.Name, $"{user.FirstName ?? string.Empty} {user.LastName ?? string.Empty}")
+            };
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not found")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

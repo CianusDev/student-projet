@@ -17,10 +17,10 @@ namespace StudentProjectAPI.Dtos.Project
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
         
-        public string? Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         [Required]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; } = string.Empty;
         
         public string TeacherName { get; set; } = string.Empty;
         

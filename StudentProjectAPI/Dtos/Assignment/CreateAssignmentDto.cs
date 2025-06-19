@@ -7,7 +7,7 @@ namespace StudentProjectAPI.Dtos.Assignment
         [Required(ErrorMessage = "L'ID du projet est requis")]
         public int ProjectId { get; set; }
 
-        public int? StudentId { get; set; } // Pour projet individuel
+        public string? StudentId { get; set; } // Pour projet individuel
         public int? GroupId { get; set; } // Pour projet de groupe
     }
 } 

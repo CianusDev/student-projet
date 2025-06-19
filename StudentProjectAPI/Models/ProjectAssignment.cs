@@ -15,14 +15,17 @@ namespace StudentProjectAPI.Models
         [Required]
         public int ProjectId { get; set; }
         
-        public int? StudentId { get; set; } // Pour projet individuel
+        public string? StudentId { get; set; }
         
         public int? GroupId { get; set; } // Pour projet de groupe
         
-        [StringLength(20)]
-        public string Status { get; set; } = "Assigned"; // Assigned, InProgress, Submitted, Graded
+        [Required]
+        public AssignmentStatus Status { get; set; } = AssignmentStatus.Assigned;
         
+        [Required]
         public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
+        
+        public DateTime? CompletedAt { get; set; }
         
         // Navigation properties
         [ForeignKey("ProjectId")]

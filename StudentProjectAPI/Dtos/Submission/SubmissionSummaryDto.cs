@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace StudentProjectAPI.DTOs.Submission
+namespace StudentProjectAPI.Dtos.Submission
 {
 
     // DTO pour liste des soumissions

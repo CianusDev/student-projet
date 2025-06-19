@@ -33,7 +33,7 @@ namespace StudentProjectAPI.Controllers
         /// <param name="userId">ID de l'utilisateur</param>
         /// <param name="changePasswordDto">Données de changement de mot de passe</param>
         /// <returns>Message de confirmation du changement de mot de passe</returns>
-        public async Task<AuthResponseDto> ChangePassword(int userId, ChangePasswordDto changePasswordDto)
+        public async Task<AuthResponseDto> ChangePassword(string userId, ChangePasswordDto changePasswordDto)
         {
             var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
             return new AuthResponseDto { Message = "Mot de passe modifié avec succès" };

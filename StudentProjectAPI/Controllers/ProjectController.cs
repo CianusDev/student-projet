@@ -3,38 +3,33 @@ using StudentProjectAPI.Services;
 
 namespace StudentProjectAPI.Controllers
 {
-    public class ProjectController
+    public class ProjectController(IProjectService projectService)
     {
-        private readonly IProjectService _projectService;
+        private readonly IProjectService _projectService = projectService;
 
-        public ProjectController(IProjectService projectService)
-        {
-            _projectService = projectService;
-        }
-
-        public async Task<IEnumerable<ProjectResponseDto>> GetAllProjects()
+        public async Task<IEnumerable<ProjectDto>> GetAllProjects()
         {
             return await _projectService.GetAllProjectsAsync();
         }
 
-        public async Task<ProjectResponseDto?> GetProjectById(int id)
+        public async Task<ProjectDto?> GetProjectById(int id)
         {
             return await _projectService.GetProjectByIdAsync(id);
         }
 
-        public async Task<ProjectResponseDto> CreateProject(CreateProjectDto dto, int userId)
+        public async Task<ProjectDto> CreateProject(CreateProjectDto dto, string teacherId)
         {
-            return await _projectService.CreateProjectAsync(dto, userId);
+            return await _projectService.CreateProjectAsync(dto, teacherId);
         }
 
-        public async Task<ProjectResponseDto?> UpdateProject(int id, UpdateProjectDto dto)
+        public async Task<ProjectDto?> UpdateProject(int id, UpdateProjectDto dto, string teacherId)
         {
-            return await _projectService.UpdateProjectAsync(id, dto);
+            return await _projectService.UpdateProjectAsync(id, dto, teacherId);
         }
 
-        public async Task<bool> DeleteProject(int id)
+        public async Task<bool> DeleteProject(int id, string teacherId)
         {
-            return await _projectService.DeleteProjectAsync(id);
+            return await _projectService.DeleteProjectAsync(id, teacherId);
         }
     }
 } 

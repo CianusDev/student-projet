@@ -16,7 +16,7 @@ namespace StudentProjectAPI.Models
         public int AssignmentId { get; set; }
         
         [Required]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; } = string.Empty;
         
         [Column(TypeName = "decimal(5,2)")]
         public decimal? OverallGrade { get; set; }
